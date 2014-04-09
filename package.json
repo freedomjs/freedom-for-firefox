@@ -1,0 +1,30 @@
+{
+  "name": "freedom-for-firefox",
+  "description": "Embracing a distributed web",
+  "version": "0.0.1",
+  "homepage": "http://freedomjs.org",
+  "bugs": {
+    "url": "http://github.com/freedomjs/freedom-for-firefox/issues",
+    "email": "freedom@cs.washington.edu"
+  },
+  "contributors": [
+    "Will Scott <willscott@gmail.com> (https://wills.co.tt/)",
+    "Raymond Cheng <ryscheng@cs.washington.edu> (http://raymondcheng.net)",
+    "Paul Ellenbogen <epaul9@cs.washington.edu>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/freedomjs/freedom-for-firefox"
+  },
+  "devDependencies": {
+    "freedom": "~0.4.4",
+    "grunt": "~0.4.2",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-jshint": "~0.8.0"
+  },
+  "peerDependencies": {
+    "freedom": "~0.4.4"
+  },
+  "scripts": {}
+}
