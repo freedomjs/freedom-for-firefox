@@ -1,6 +1,6 @@
 
       // Create default context.
-      if (firefox_config) {
+      if (typeof firefox_config !== 'undefined') {
         global['freedom'] = fdom.setup(global, freedom_src, firefox_config);
       } else {
         global['freedom'] = fdom.setup(global, freedom_src);
