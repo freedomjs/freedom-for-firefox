@@ -1,31 +1,25 @@
+Components.utils.import("resource://gre/modules/devtools/Console.jsm");
+Components.utils.import("resource://gre/modules/Timer.jsm");
+// This module does not support all of es6 promise functionality.
+// Components.utils.import("resource://gre/modules/Promise.jsm");
+const XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1", "nsIXMLHttpRequest");
+this.URL = new URL(this.__URI__);
+
 var freedom;
 
-function setupFreedom(options, dataManifest) {
-  if (freedom) {
-    return;
+function setupFreedom(options, manifest) {
+  if (this.freedom) {
+    return this.freedom;
   }
-  Components.utils.import("resource://gre/modules/devtools/Console.jsm");
-  console.log("setupFreedom");
 
-  var hiddenWindow = Components.classes["@mozilla.org/appshell/appShellService;1"]
-        .getService(Components.interfaces.nsIAppShellService)
-        .hiddenDOMWindow;
-
-  var frame;
-  debugger;
-  // Create document for freedom to attach to
-  var XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-  // frame = hiddenWindow.document.createElementNS(XUL_NS, "iframe");
-  frame = hiddenWindow.document.createElement("iframe");
-  frame.setAttribute("type", "content");
-  var script = hiddenWindow.document.createElement("script");
-  script.setAttribute("data-manifest", dataManifest);
-  script.textContent = JSON.stringify(options);
-  frame.appendChild(script);
-  hiddenWindow.document.documentElement.appendChild(frame);
-  var document = frame.contentWindow.document;
-  frame.document = document;
-
-  // Bind this frame as the FreeDOMs global
-  function setupFreedomWithGlobal() {
+  var lastSlash = manifest.lastIndexOf("/");
+  var manifestLocation = manifest.substring(0, lastSlash + 1);
+  //var manifestFilename = manifest.substring(lastSlash + 1);
+  firefox_config = {
+    isApp: false,
+    manifest: manifest,
+    portType: 'Worker',
+    stayLocal: true,
+    location: manifestLocation
+  };
 

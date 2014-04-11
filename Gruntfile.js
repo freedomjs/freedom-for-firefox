@@ -10,6 +10,8 @@ for (var key in FILES) {
   });
 }
 
+var FIREFOX_FILES = ['src/firefox-preamble.js'];
+
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -27,11 +29,10 @@ module.exports = function(grunt) {
             return src.replace(/\/\*jslint/g,'/*');
           }
         },
-        src: ['src/firefox-preamble.js'] 
+        src: FIREFOX_FILES
             .concat(FILES.preamble)
             .concat(FILES.src)
             //.concat('providers/*.js')
-            .concat(FILES.postamble)
             .concat('src/firefox-postamble.js'),
         dest: 'freedom-for-firefox.jsm'
       }
