@@ -7,7 +7,7 @@ Components.utils.importGlobalProperties(['URL']);
 
 var freedom;
 
-function setupFreedom(options, manifest) {
+function setupFreedom(manifest) {
   if (this.freedom) {
     return this.freedom;
   }
