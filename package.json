@@ -26,5 +26,7 @@
   "peerDependencies": {
     "freedom": "~0.4.4"
   },
-  "scripts": {}
+  "scripts": {
+      "install": "grunt"
+  }
 }
