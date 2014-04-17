@@ -6,7 +6,7 @@ function nsIServerSocketListener(serverSocket) {
 }
 
 nsIServerSocketListener.prototype.onSocketAccepted = function(nsiServerSocket, transport) {
-  let clientSocket = new ClientSocket(transport);
+  var clientSocket = new ClientSocket(transport);
   if(typeof this.serverSocket.onConnect === 'function') {
     this.serverSocket.onConnect(clientSocket);
   }
