@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         src: FIREFOX_FILES
             .concat(FILES.preamble)
             .concat(FILES.src)
-            //.concat('providers/*.js')
+            .concat('providers/*.js')
             .concat('src/firefox-postamble.js'),
         dest: 'freedom-for-firefox.jsm'
       }
