@@ -1,4 +1,6 @@
 var FILES = require('freedom/Gruntfile.js').FILES;
+var fs = require('fs');
+var prefix = 'node_modules/freedom/';
 
 for (var key in FILES) {
   FILES[key] = FILES[key].map(function(str) {
@@ -10,7 +12,12 @@ for (var key in FILES) {
   });
 }
 
-var FIREFOX_FILES = ['src/firefox-preamble.js'];
+// Freedom npm dependency doesn't grab promise sub dependency.
+var promise_lib =   [
+  'node_modules/es6-promise/dist/promise-*.js',
+  '!node_modules/es6-promise/dist/promise-*amd.js',
+  '!node_modules/es6-promise/dist/promise-*min.js'
+]
 
 module.exports = function(grunt) {
   grunt.initConfig({
@@ -22,31 +29,43 @@ module.exports = function(grunt) {
         '-W104': false
       }
     },
-    concat: {
-      dist: {
+    uglify: {
+      freedom: {
         options: {
-          process: function(src) {
-            return src.replace(/\/\*jslint/g,'/*');
-          }
+          sourceMap: true,
+          sourceMapName: 'freedom.map',
+          sourceMapIncludeSources: true,
+          mangle: false,
+          beautify: true,
+          preserveComments: function(node, comment) {
+            return comment.value.indexOf('jslint') !== 0;
+          },
+          banner: fs.readFileSync('src/firefox-preamble.js', 'utf8') + 
+            fs.readFileSync(prefix + 'src/util/preamble.js', 'utf8'),
+          footer: fs.readFileSync('src/firefox-postamble.js', 'utf8') 
+          // footer: fs.readFileSync(prefix + 'src/util/postamble.js', 'utf8') +
+          //   fs.readFileSync('src/firefox-postamble.js', 'utf8') 
+            
         },
-        src: FIREFOX_FILES
-            .concat(FILES.preamble)
+        files: {
+          'freedom-for-firefox.jsm':
+          FILES.lib
+            .concat(promise_lib)
             .concat(FILES.src)
             .concat('providers/*.js')
-            .concat('src/firefox-postamble.js'),
-        dest: 'freedom-for-firefox.jsm'
+        }
       }
     },
     clean: ["freedom-for-firefox.jsm"]
   });
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.registerTask('freedom-firefox', [
     'jshint:providers',
-    'concat'
+    'uglify'
   ]);
   grunt.registerTask('default', ['freedom-firefox']);
 };
