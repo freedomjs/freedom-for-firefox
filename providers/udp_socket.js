@@ -27,7 +27,7 @@ Udp_firefox.prototype.getInfo = function(continuation) {
 };
 
 Udp_firefox.prototype.sendTo = function(buffer, address, port, continuation) {
-  http://lxr.mozilla.org/mozilla-central/source/netwerk/base/public/nsINetAddr.idl
+  // http://lxr.mozilla.org/mozilla-central/source/netwerk/base/public/nsINetAddr.idl
   var nsINetAddr = {
     family: Components.interfaces.nsINetAddr.FAMILY_INET,
     port: port,
