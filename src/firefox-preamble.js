@@ -13,7 +13,7 @@ var mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
 
 var freedom;
 
-function setupFreedom(manifest) {
+function setupFreedom(manifest, debug) {
   if (this.freedom) {
     return this.freedom;
   }
@@ -26,6 +26,7 @@ function setupFreedom(manifest) {
     manifest: manifest,
     portType: 'Worker',
     stayLocal: true,
-    location: manifestLocation
+    location: manifestLocation,
+    debug: debug || false
   };
 

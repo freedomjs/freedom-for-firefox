@@ -31,7 +31,7 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
     if (e.name !== 'NS_BASE_STREAM_CLOSED') {
       console.warn(e);
     }
-    this.socket.disconnect();
+    this.socket.close();
     return;
   }
 
@@ -91,7 +91,7 @@ ClientSocket.prototype.write = function(data) {
   this.outputStream.write(stringData, stringData.length);
 };
 
-ClientSocket.prototype.disconnect = function() {
+ClientSocket.prototype.close = function() {
   this.binaryReader.close(0);
   this.rawInputStream.close(0);
   this.transport.close(0);
