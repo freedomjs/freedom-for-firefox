@@ -11,6 +11,10 @@ var mozRTCPeerConnection = hiddenWindow.mozRTCPeerConnection;
 var mozRTCSessionDescription = hiddenWindow.mozRTCSessionDescription;
 var mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
 
+// Replace Blob with blob that has prototype defined.
+// See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
+var Blob = hiddenWindow.Blob;
+
 var freedom;
 
 function setupFreedom(manifest, debug) {
