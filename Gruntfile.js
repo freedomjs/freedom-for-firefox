@@ -56,7 +56,7 @@ module.exports = function(grunt) {
         }
       }
     },
-    clean: ["freedom-for-firefox.jsm"]
+    clean: ["freedom-for-firefox.jsm", "freedom.map"]
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
