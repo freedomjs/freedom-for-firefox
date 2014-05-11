@@ -6,6 +6,12 @@ if (typeof Services === "undefined") {
 }
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
 
+/**
+ * Storage_firefox is a core.storage provider for firefox
+ * extensions. Storage_firefox uses the storage API built into
+ * firefox, which is backed by SQLite. See
+ * https://developer.mozilla.org/en-US/docs/Storage.
+ */
 function Storage_firefox(module, dispatchEvent) {
   var lineage = module.lineage[module.lineage.length - 1];
   this._dbFile = FileUtils.getFile("ProfD", [lineage + ".sqlite"]);
