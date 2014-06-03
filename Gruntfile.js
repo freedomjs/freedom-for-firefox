@@ -51,7 +51,7 @@ module.exports = function(grunt) {
           'freedom-for-firefox.jsm':
           FILES.lib
             .concat(promise_lib)
-            .concat(FILES.src)
+            .concat(FILES.srcCore)
             .concat('providers/*.js')
         }
       }
