@@ -18,6 +18,6 @@ Or in classic firefox extensions use:
     Components.utils.import(PATH TO .jsm);
 
 
-This will define the function `setupFreedom` in the current scope. `setupFreedom` takes two arguments. The first argument is an "options" object. The second argument is the path to the freedom manifest file. `setupFreedom` returns a freedom object.
+This will define the function `setupFreedom` in the current scope. `setupFreedom` takes a single argument: the path to the freedom manifest file. `setupFreedom` returns a freedom object.
 
 NOTE: The behavior of calling `setupFreedom` more than once is undefined.
