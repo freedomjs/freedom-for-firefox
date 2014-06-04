@@ -15,6 +15,8 @@ var mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
 // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
 var Blob = hiddenWindow.Blob;
 
+this.addEventListener
+
 var freedom;
 
 function setupFreedom(manifest, debug) {
@@ -31,6 +33,7 @@ function setupFreedom(manifest, debug) {
     portType: 'Worker',
     stayLocal: true,
     location: manifestLocation,
-    debug: debug || false
+    debug: debug || false,
+    moduleContext: false
   };
 
