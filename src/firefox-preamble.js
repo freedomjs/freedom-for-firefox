@@ -15,9 +15,11 @@ var mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
 // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
 var Blob = hiddenWindow.Blob;
 
+var firefoxExtension = true;
+
 var freedom;
 
-function setupFreedom(manifest, debug) {
+function setupFreedom(manifest, debug, freedomcfg) {
   if (this.freedom) {
     return this.freedom;
   }
