@@ -34,6 +34,6 @@ function setupFreedom(manifest, debug, freedomcfg) {
     stayLocal: true,
     location: manifestLocation,
     debug: debug || false,
-    moduleContext: false
+    isModule: false
   };
 
