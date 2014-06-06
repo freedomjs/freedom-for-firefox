@@ -51,12 +51,12 @@ module.exports = function(grunt) {
           'freedom-for-firefox.jsm':
           FILES.lib
             .concat(promise_lib)
-            .concat(FILES.src)
+            .concat(FILES.srcCore)
             .concat('providers/*.js')
         }
       }
     },
-    clean: ["freedom-for-firefox.jsm"]
+    clean: ["freedom-for-firefox.jsm", "freedom.map"]
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');

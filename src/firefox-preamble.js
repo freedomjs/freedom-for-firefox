@@ -11,9 +11,19 @@ var mozRTCPeerConnection = hiddenWindow.mozRTCPeerConnection;
 var mozRTCSessionDescription = hiddenWindow.mozRTCSessionDescription;
 var mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
 
+// Replace Blob with blob that has prototype defined.
+// See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
+var Blob = hiddenWindow.Blob;
+
 var freedom;
 
-function setupFreedom(manifest, debug) {
+// Fake the location object so that freedom detects that it is in a
+// privileged environment.
+var location = {
+  protocol: "resource:"
+};
+
+function setupFreedom(manifest, debug, freedomcfg) {
   if (this.freedom) {
     return this.freedom;
   }
@@ -27,6 +37,7 @@ function setupFreedom(manifest, debug) {
     portType: 'Worker',
     stayLocal: true,
     location: manifestLocation,
-    debug: debug || false
+    debug: debug || false,
+    isModule: false
   };
 

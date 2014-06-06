@@ -8,7 +8,7 @@ function Socket_firefox(channel, dispatchEvent, socketId) {
   if (socketId in incommingConnections) {
     this.clientSocket = incommingConnections[socketId];
     delete incommingConnections[socketId];
-    this.clientSocket.onData = this._onData.bind(this);
+    this.clientSocket.setOnDataListener(this._onData.bind(this));
   }
 }
 
@@ -27,7 +27,7 @@ Socket_firefox.prototype.close = function(continuation) {
 
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
-  this.clientSocket.onData = this.onData.bind(this);
+  this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(hostname, port);
   continuation();
 };

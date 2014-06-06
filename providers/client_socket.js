@@ -43,6 +43,9 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
         .getService(Components.interfaces.nsISocketTransportService);
   if (typeof this.socket.onData === 'function') {
     this.socket.onData(typedBuffer);
+  } else {
+    // Save data until we have a handler.
+    this.socket._waitingData.push(typedBuffer);
   }
   this.socket.rawInputStream.asyncWait(this, 0, 0, mainThread);
 };
@@ -54,6 +57,7 @@ function ClientSocket(incomingTransport) {
   if (typeof incomingTransport !== 'undefined') {
     this._setupTransport(incomingTransport);
   }
+  this._waitingData = [];
 }
 
 ClientSocket.prototype._setupTransport = function(transport) {
@@ -118,6 +122,13 @@ ClientSocket.prototype.getInfo = function() {
               localPort: nsINetAddrLocal.port};
   return info;
   
+};
+
+ClientSocket.prototype.setOnDataListener = function(listener) {
+  while (this._waitingData.length > 0) {
+    listener(this._waitingData.shift());
+  }
+  this.onData = listener;
 };
 
 ClientSocket.prototype.arrayBufferToString = function(buf) {
