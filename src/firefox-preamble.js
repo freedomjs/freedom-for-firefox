@@ -17,6 +17,8 @@ var Blob = hiddenWindow.Blob;
 
 var freedom;
 
+// Fake the location object so that freedom detects that it is in a
+// privileged environment.
 var location = {
   protocol: "resource:"
 };
