@@ -37,6 +37,7 @@ module.exports = function(grunt) {
           sourceMapIncludeSources: true,
           mangle: false,
           beautify: true,
+          compress: false,
           preserveComments: function(node, comment) {
             return comment.value.indexOf('jslint') !== 0;
           },

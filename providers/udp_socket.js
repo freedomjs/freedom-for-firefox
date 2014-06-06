@@ -27,15 +27,15 @@ Udp_firefox.prototype.getInfo = function(continuation) {
 };
 
 Udp_firefox.prototype.sendTo = function(buffer, address, port, continuation) {
-  // http://lxr.mozilla.org/mozilla-central/source/netwerk/base/public/nsINetAddr.idl
-  var nsINetAddr = {
-    family: Components.interfaces.nsINetAddr.FAMILY_INET,
-    port: port,
-    address: address
-  };
-  var bytesWritten = this._nsIUDPSocket.sendWithAddr(nsINetAddr,
-                                                     buffer,
-                                                     buffer.length);
+  var asArray = [];
+  var view = new Uint8Array(buffer);
+  for (var i = 0; i < buffer.byteLength; i++) {
+    asArray.push(view[i]);
+  }
+  var bytesWritten = this._nsIUDPSocket.send(address,
+                                             port,
+                                             asArray,
+                                             asArray.length);
   continuation(bytesWritten);
 };
 
@@ -53,7 +53,7 @@ nsIUDPSocketListener.prototype.onPacketReceived = function(nsIUDPSocket,
   var eventData = {
     resultCode: 0,
     address: message.fromAddr.address,
-    port: message.fromAddr.address,
+    port: message.fromAddr.port,
     data: this.str2ab(message.data)
   };
   this._udpSocket.dispatchEvent("onData",
