@@ -6,7 +6,8 @@ if (typeof fdom === 'undefined') {
 fdom.link = fdom.link || {};
 
 /**
- * A port providing message transport between two freedom contexts via iBackgroundFrames.
+ * A port providing message transport between two freedom contexts via iFrames
+ * on the global backgound page.
  * @class link.BackgroundFrame
  * @extends Link
  * @uses handleEvents
@@ -74,7 +75,7 @@ fdom.link.BackgroundFrame.prototype.setupListener = function() {
 };
 
 /**
- * Set up an iBackgroundFrame with an isolated freedom.js context inside.
+ * Set up an iFrame with an isolated freedom.js context inside.
  * @method setupBackgroundFrame
  */
 fdom.link.BackgroundFrame.prototype.setupBackgroundFrame = function() {
@@ -109,7 +110,7 @@ fdom.link.BackgroundFrame.prototype.setupBackgroundFrame = function() {
 
 /**
  * Make frames to replicate freedom isolation without web-workers.
- * iBackgroundFrame isolation is non-standardized, and access to the DOM within frames
+ * iFrame isolation is non-standardized, and access to the DOM within frames
  * means that they are insecure. However, debugging of webworkers is
  * painful enough that this mode of execution can be valuable for debugging.
  * @method makeBackgroundFrame
