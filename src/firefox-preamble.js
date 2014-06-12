@@ -23,7 +23,7 @@ var location = {
   protocol: "resource:"
 };
 
-function setupFreedom(manifest, debug, freedomcfg) {
+function setupFreedom(manifest, debug, freedomcfg, fftabs) {
   if (this.freedom) {
     return this.freedom;
   }
@@ -34,7 +34,7 @@ function setupFreedom(manifest, debug, freedomcfg) {
   firefox_config = {
     isApp: false,
     manifest: manifest,
-    portType: 'Worker',
+    portType: 'Tab',
     stayLocal: true,
     location: manifestLocation,
     debug: debug || false,
