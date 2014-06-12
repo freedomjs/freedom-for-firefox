@@ -53,7 +53,7 @@ module.exports = function(grunt) {
           FILES.lib
             .concat(promise_lib)
             .concat(FILES.srcCore)
-            .concat("src/tab-link.js")
+            .concat("src/backgroundframe-link.js")
             .concat('providers/*.js')
         }
       }

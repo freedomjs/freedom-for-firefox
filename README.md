@@ -18,10 +18,12 @@ Or in classic firefox extensions use:
     Components.utils.import(PATH TO .jsm);
 
 
-This will define the function `setupFreedom` in the current scope. `setupFreedom` takes three arguments:
-- manifest: the path to the freedom manifest file.
-- debug: true for debugging output.
-- freedomcfg: the freedomcfg function for defining new freedom apis.
+This will define the function `setupFreedom` in the current scope. `setupFreedom` takes two arguments:
+  - manifest: the path to the freedom manifest file.
+  - options: an dictionary mapping various options
+    - debug: true for debugging output.
+    - freedomcfg: the freedomcfg function for defining new freedom apis.
+    - portType: Type of port. Default is Worker. BackgroundFrame is available for debugging purposes.
 
 `setupFreedom` returns a freedom object.
 
