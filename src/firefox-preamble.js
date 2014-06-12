@@ -23,7 +23,6 @@ var location = {
 };
 
 function setupFreedom(manifest, options) {
-  debugger;
   if (this.freedom) {
     return this.freedom;
   }
