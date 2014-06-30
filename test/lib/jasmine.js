@@ -1,18 +1,22 @@
 const {Cu} = require("chrome");
 var {setTimeout, clearTimeout,
      setInterval, clearInterval} = require("sdk/timers");
-const self = require("sdk/self");
+// const self = require("sdk/self");
+const {data} = require("sdk/self");
 
 Cu.import("resource://gre/modules/Services.jsm");
 
 
-var context = {exports: {}};
+var global = {exports: {}};
 var specFiles = [];
+var hiddenWindow = Services.appShell.hiddenDOMWindow;
+var Blob = hiddenWindow.Blob;
 
+Services.scriptloader.loadSubScript(data.url("../lib/jasmine-2.0.0/jasmine.js"), global);
+Services.scriptloader.loadSubScript(data.url("../lib/jasmine-2.0.0/console.js"), global);
+Services.scriptloader.loadSubScript(data.url("promise-0.1.2.js"));
+var jasmine = global.exports.core(global.exports);
 
-Services.scriptloader.loadSubScript(self.data.url("../lib/jasmine-2.0.0/jasmine.js"), context);
-Services.scriptloader.loadSubScript(self.data.url("../lib/jasmine-2.0.0/console.js"), context);
-var jasmine = context.exports.core(context.exports);
 var env = jasmine.getEnv();
 
 /**
@@ -60,10 +64,10 @@ var jasmineInterface = {
   })
 };
 
-extend(context, jasmineInterface);
+extend(global, jasmineInterface);
 
 // From https://github.com/pivotal/jasmine/issues/493#issuecomment-31630393
-var ConsoleReporter = context.exports.ConsoleReporter();
+var ConsoleReporter = global.exports.ConsoleReporter();
 var reporterOptions = {
   timer: new jasmine.Timer(),
   showColors: true,
@@ -97,7 +101,7 @@ jasmine.clock = function() {
 function executeSpecs() {
   specFiles.forEach(function(specFile) {
     try {
-      Services.scriptloader.loadSubScript(specFile, context);
+      Services.scriptloader.loadSubScript(specFile, global);
     } catch (e) {
       console.warn("Error while loading file: " + specFile + 
                    ". " + e.message);
@@ -109,7 +113,7 @@ function executeSpecs() {
 function addSpec(location) {
   // Check if the file exists
   try {
-    self.data.load(location);
+    data.load(location);
   } catch (e) {
     if (e.name === "NS_ERROR_FILE_NOT_FOUND") {
       throw new Error("No such file: " + location);

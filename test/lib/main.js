@@ -11,7 +11,10 @@ const jasmine = require("jasmine.js");
 const directory = JSON.parse(self.data.load("directory.json"));
 var sourceFiles = filesIn(directory, "src");
 var sourceSpec = filesIn(directory, "spec/src");
+//var sourceSpec = ["./spec/src/apis.spec.js","./spec/src/debug.spec.js","./spec/src/freedom.spec.js","./spec/src/freedomModule.spec.js","./spec/src/hub.spec.js","./spec/src/manager.spec.js","./spec/src/module.spec.js","./spec/src/moduleInternal.spec.js","./spec/src/policy.spec.js","./spec/src/provider.spec.js","./spec/src/proxy.spec.js","./spec/src/resource.spec.js","./spec/src/util.spec.js"];
+// var sourceSpec = ["./spec/src/proxyAPIInterface.spec.js"];
 
+jasmine.addSpec(self.data.url("spec/util.js"));
 //setTimeout(function() {
 sourceFiles.concat(sourceSpec).forEach(function addSrcFiles(file) {
   try {

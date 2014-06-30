@@ -67,6 +67,9 @@ module.exports = function(grunt) {
            dest: 'build/test/lib'},
           {expand: true, cwd: 'node_modules/freedom/',
            src: ['spec/**', 'src/**', 'providers/**'],
+           dest: 'build/test/data'},
+          {expand: true, cwd: 'node_modules/es6-promise/dist',
+           src: [ 'promise-0.*.*.js'],
            dest: 'build/test/data'}
         ]
       }
