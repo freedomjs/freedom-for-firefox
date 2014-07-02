@@ -28,3 +28,11 @@ This will define the function `setupFreedom` in the current scope. `setupFreedom
 `setupFreedom` returns a freedom object.
 
 NOTE: The behavior of calling `setupFreedom` more than once is undefined.
+
+
+Testing
+-------
+
+Running the command `grunt build_test` will create a `build/test` directory from the `test` directory and files included via npm. Navigate to that directory with the cfx tool activated and run `cfx run` to run the tests.
+
+The testing framework does not currently run the all the unit tests that run in the browser. The current tests are in the test/data directory. They run on Jasmine 2.0, and report directly into the terminal that the command `cfx run` was run from.
