@@ -1,7 +1,7 @@
 {
   "name": "freedom-for-firefox",
   "description": "Embracing a distributed web",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "homepage": "http://freedomjs.org",
   "bugs": {
     "url": "http://github.com/freedomjs/freedom-for-firefox/issues",
@@ -17,16 +17,14 @@
     "url": "https://github.com/freedomjs/freedom-for-firefox"
   },
   "devDependencies": {
-    "freedom": "~0.4.4",
+    "freedom": "~0.5.0",
     "grunt": "~0.4.2",
+    "es5-shim": "^3.1.1",
     "es6-promise": "~0.1.1",
     "grunt-contrib-uglify": "^0.4.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-jshint": "~0.8.0"
-  },
-  "peerDependencies": {
-    "freedom": "~0.4.4"
   },
   "scripts": {}
 }
