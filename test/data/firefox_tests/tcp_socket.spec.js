@@ -1,4 +1,3 @@
-var global = this;
 describe("sockets", function() {
   var clientSocket, serverSocket;
   beforeEach(function() {

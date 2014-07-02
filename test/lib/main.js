@@ -14,11 +14,11 @@ var providers = ["firefox_providers/client_socket.js",
                  "firefox_providers/udp_socket.js"];
 
 var tests = [
-  "firefox_tests/client_socket.spec.js"
+  "firefox_tests/client_socket.spec.js",
+  "firefox_tests/udp_socket.spec.js"
 ];
 
 
-//setTimeout(function() {
 providers.concat(tests).forEach(function addSrcFiles(file) {
   try {
     jasmine.addSpec(self.data.url(file));
@@ -28,7 +28,6 @@ providers.concat(tests).forEach(function addSrcFiles(file) {
 });
 
 jasmine.executeSpecs();
-//}, 15000);
 
 
 
