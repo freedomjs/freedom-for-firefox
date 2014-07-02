@@ -68,6 +68,9 @@ module.exports = function(grunt) {
           {expand: true, cwd: 'node_modules/freedom/',
            src: ['spec/**', 'src/**', 'providers/**'],
            dest: 'build/test/data'},
+          {expand: true, cwd: 'providers',
+           src: ['*.js'],
+           dest: 'build/test/data/firefox_providers'},
           {expand: true, cwd: 'node_modules/es6-promise/dist',
            src: [ 'promise-0.*.*.js'],
            dest: 'build/test/data'}
@@ -87,7 +90,7 @@ module.exports = function(grunt) {
     'uglify'
   ]);
   grunt.registerTask('writeJsonDir', 'Write', writeJsonDir);
-  grunt.registerTask('test', [
+  grunt.registerTask('build_test', [
     'freedom-firefox',
     'copy:test',
     'writeJsonDir'

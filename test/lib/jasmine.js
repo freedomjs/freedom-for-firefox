@@ -1,4 +1,4 @@
-const {Cu} = require("chrome");
+const {Cu, Cc, Ci, Cr, Cm} = require("chrome");
 var {setTimeout, clearTimeout,
      setInterval, clearInterval} = require("sdk/timers");
 // const self = require("sdk/self");
@@ -7,7 +7,16 @@ const {data} = require("sdk/self");
 Cu.import("resource://gre/modules/Services.jsm");
 
 
-var global = {exports: {}};
+var global = {
+  exports: {},
+  Components: {
+    util: Cu,
+    classes: Cc,
+    interfaces: Ci,
+    results: Cr,
+    manager: Cr
+  }
+};
 var specFiles = [];
 var hiddenWindow = Services.appShell.hiddenDOMWindow;
 var Blob = hiddenWindow.Blob;

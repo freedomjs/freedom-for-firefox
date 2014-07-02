@@ -8,15 +8,18 @@ const self = require("sdk/self");
 
 
 const jasmine = require("jasmine.js");
-const directory = JSON.parse(self.data.load("directory.json"));
-var sourceFiles = filesIn(directory, "src");
-var sourceSpec = filesIn(directory, "spec/src");
-//var sourceSpec = ["./spec/src/apis.spec.js","./spec/src/debug.spec.js","./spec/src/freedom.spec.js","./spec/src/freedomModule.spec.js","./spec/src/hub.spec.js","./spec/src/manager.spec.js","./spec/src/module.spec.js","./spec/src/moduleInternal.spec.js","./spec/src/policy.spec.js","./spec/src/provider.spec.js","./spec/src/proxy.spec.js","./spec/src/resource.spec.js","./spec/src/util.spec.js"];
-// var sourceSpec = ["./spec/src/proxyAPIInterface.spec.js"];
 
-jasmine.addSpec(self.data.url("spec/util.js"));
+var providers = ["firefox_providers/client_socket.js",
+                 "firefox_providers/server_socket.js",
+                 "firefox_providers/udp_socket.js"];
+
+var tests = [
+  "firefox_tests/client_socket.spec.js"
+];
+
+
 //setTimeout(function() {
-sourceFiles.concat(sourceSpec).forEach(function addSrcFiles(file) {
+providers.concat(tests).forEach(function addSrcFiles(file) {
   try {
     jasmine.addSpec(self.data.url(file));
   } catch (e) { // Temp files sometimes cause issues.
@@ -27,6 +30,14 @@ sourceFiles.concat(sourceSpec).forEach(function addSrcFiles(file) {
 jasmine.executeSpecs();
 //}, 15000);
 
+
+
+// TODO Run all freedom unit tests in freedom-for-firefox. The stuff
+// below may come in handy.
+
+// const directory = JSON.parse(self.data.load("directory.json"));
+// var sourceFiles = filesIn(directory, "src");
+// var sourceSpec = filesIn(directory, "spec/src");
 
 // Return the files in targetDirectory by searching through the JSON
 // representation of the directory structure given by
