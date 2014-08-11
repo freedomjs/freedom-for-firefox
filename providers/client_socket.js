@@ -75,13 +75,15 @@ ClientSocket.prototype._setupTransport = function(transport) {
 
 };
 
-ClientSocket.prototype.connect = function(hostname, port) {
+ClientSocket.prototype.connect = function(hostname, port, startTls) {
   if (typeof this.transport !== 'undefined') {
     throw new Error('Socket already connected');
   }
 
-  var transport = socketTransportService.createTransport([null],
-                                                         0,
+  var socketTypes = startTls ? ['starttls'] : [null];
+  var numSocketTypes = startTls ? 1 : 0;
+  var transport = socketTransportService.createTransport(socketTypes,
+                                                         numSocketTypes,
                                                          hostname,
                                                          port,
                                                          null);

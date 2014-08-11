@@ -11,7 +11,7 @@ describe("sockets", function() {
       serverSocket.disconnect();
       done();
     };
-    clientSocket.connect("localhost", 8081);
+    clientSocket.connect("localhost", 8081, false);
   });
 
   it("receives data", function(done) {
@@ -24,7 +24,7 @@ describe("sockets", function() {
         done();
       });
     };
-    clientSocket.connect("localhost", 8081);
+    clientSocket.connect("localhost", 8081, false);
     clientSocket.write(str2ab(stringMessage));
   });
 

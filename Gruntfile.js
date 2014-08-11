@@ -86,17 +86,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.registerTask('freedom-firefox', [
+  grunt.registerTask('build', [
     'jshint:providers',
     'uglify'
   ]);
   grunt.registerTask('writeJsonDir', 'Write', writeJsonDir);
   grunt.registerTask('build_test', [
-    'freedom-firefox',
+    'build',
     'copy:test',
     'writeJsonDir'
   ]);
-  grunt.registerTask('default', ['freedom-firefox']);
+  grunt.registerTask('default', ['build']);
 
   // Write the contents of the data directory in the test extension
   // into a JSON file. We have to do this because files/directories

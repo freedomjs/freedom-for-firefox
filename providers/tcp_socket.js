@@ -25,10 +25,28 @@ Socket_firefox.prototype.close = function(continuation) {
   continuation();
 };
 
+// TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(hostname, port);
+  this.clientSocket.connect(hostname, port, false);
+  this.hostname = hostname;
+  this.port = port;
+  continuation();
+};
+
+// TODO: handle failures.
+Socket_firefox.prototype.secure = function(continuation) {
+  if (!this.hostname || !this.port || !this.clientSocket) {
+    continuation(undefined, {
+      "errcode": "SOCKET_NOT_CONNECTED",
+      "message": "Cannot Secure Not Connected Socket"
+    });
+    return;
+  }
+  this.clientSocket = new ClientSocket();
+  this.clientSocket.setOnDataListener(this._onData.bind(this));
+  this.clientSocket.connect(this.hostname, this.port, true);
   continuation();
 };
 
