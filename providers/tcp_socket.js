@@ -44,6 +44,14 @@ Socket_firefox.prototype.secure = function(continuation) {
     });
     return;
   }
+  // Create a new ClientSocket (nsISocketTransport) object for the existing
+  // hostname and port, using type 'starttls'.  This will upgrade the existing
+  // connection to TLS, rather than create a new connection.
+  // TODO: check to make sure this doesn't result in weird race conditions if
+  // we have 2 pieces of code both trying to connect to the same hostname/port
+  // and do a starttls flow (e.g. if there are 2 instances of a GTalk social
+  // provider that are both trying to connect to GTalk simultaneously with
+  // different logins).
   this.clientSocket = new ClientSocket();
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(this.hostname, this.port, true);
