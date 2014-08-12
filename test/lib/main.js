@@ -11,11 +11,13 @@ const jasmine = require("jasmine.js");
 
 var providers = ["firefox_providers/client_socket.js",
                  "firefox_providers/server_socket.js",
+                 "firefox_providers/tcp_socket.js",
                  "firefox_providers/udp_socket.js"];
 
 var tests = [
   "firefox_tests/client_socket.spec.js",
-  "firefox_tests/udp_socket.spec.js"
+  "firefox_tests/udp_socket.spec.js",
+  "firefox_tests/tcp_socket.spec.js"
 ];
 
 
