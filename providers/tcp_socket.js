@@ -35,6 +35,10 @@ Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   continuation();
 };
 
+Socket_firefox.prototype.prepareSecure = function(continuation) {
+  continuation();
+};
+
 // TODO: handle failures.
 Socket_firefox.prototype.secure = function(continuation) {
   if (!this.hostname || !this.port || !this.clientSocket) {
