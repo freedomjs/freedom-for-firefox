@@ -1,3 +1,5 @@
+var ClientSocket = require('./client_socket');
+
 function nsIServerSocketListener(serverSocket) {
   if (!(this instanceof nsIServerSocketListener)) {
     return new nsIServerSocketListener(serverSocket);
@@ -47,3 +49,5 @@ ServerSocket.prototype.getInfo = function() {
               localPort: port};
   return info;
 };
+
+module.exports = ServerSocket;

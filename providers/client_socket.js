@@ -100,7 +100,9 @@ ClientSocket.prototype.write = function(data) {
 ClientSocket.prototype.close = function() {
   this.binaryReader.close(0);
   this.rawInputStream.close(0);
-  this.transport.close(0);
+  if (this.transport) {
+    this.transport.close(0);
+  }
   // Delete transport so getInfo doesn't think we are connected
   delete this.transport; 
   if (typeof this.onDisconnect === 'function') {
@@ -136,3 +138,5 @@ ClientSocket.prototype.setOnDataListener = function(listener) {
 ClientSocket.prototype.arrayBufferToString = function(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
 };
+
+module.exports = ClientSocket;
