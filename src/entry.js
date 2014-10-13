@@ -21,15 +21,15 @@ if (typeof Components !== 'undefined') {
   Components.utils.import("resource://gre/modules/devtools/Console.jsm");
   Components.utils.import("resource://gre/modules/Timer.jsm");
   Components.utils.import('resource://gre/modules/Services.jsm');
-  global.XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1", "nsIXMLHttpRequest");
+  XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1", "nsIXMLHttpRequest");
 
   var hiddenWindow = Services.appShell.hiddenDOMWindow;
-  var mozRTCPeerConnection = hiddenWindow.mozRTCPeerConnection;
-  var mozRTCSessionDescription = hiddenWindow.mozRTCSessionDescription;
-  var mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
+  mozRTCPeerConnection = hiddenWindow.mozRTCPeerConnection;
+  mozRTCSessionDescription = hiddenWindow.mozRTCSessionDescription;
+  mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
   // Replace Blob with blob that has prototype defined.
   // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
-  global.Blob = hiddenWindow.Blob;
+  Blob = hiddenWindow.Blob;
   Components.utils.importGlobalProperties(['URL']);
 
   freedom = require('freedom/src/entry').bind({}, {
