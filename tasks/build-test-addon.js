@@ -112,8 +112,11 @@ module.exports = function (grunt) {
               });
             }
             failures += 1;
+          } else if (msg.status === 'pending') {
+            grunt.log.write('>> ' + msg.fullName).subhead(msg.status);
           } else {
             grunt.log.warn(msg.fullName);
+            console.error(msg);
             failures += 1;
           }
         });
