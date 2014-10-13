@@ -10,6 +10,7 @@ mozRTCSessionDescription = hiddenWindow.mozRTCSessionDescription;
 mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
 
 Blob = hiddenWindow.Blob;
+WebSocket = hiddenWindow.WebSocket;
 
 var jasmineRequire = require('jasmine-core/lib/jasmine-core/jasmine');
 jasmine = jasmineRequire.core(jasmineRequire);

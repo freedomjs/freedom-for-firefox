@@ -30,6 +30,7 @@ if (typeof Components !== 'undefined') {
   // Replace Blob with blob that has prototype defined.
   // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
   Blob = hiddenWindow.Blob;
+  WebSocket = hiddenWindow.WebSocket;
   Components.utils.importGlobalProperties(['URL']);
 
   freedom = require('freedom/src/entry').bind({}, {
