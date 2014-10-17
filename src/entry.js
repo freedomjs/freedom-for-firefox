@@ -3,9 +3,9 @@ var providers = [
   require('freedom/providers/core/echo.unprivileged'),
   require('freedom/providers/core/logger.console'),
   require('freedom/providers/core/peerconnection.unprivileged'),
-  require('../providers/tcp_socket'),
-  require('../providers/udp_socket'),
-  require('../providers/storage'),
+  require('../providers/core.tcpsocket'),
+  require('../providers/core.udpsocket'),
+  require('../providers/core.storage'),
   require('freedom/providers/core/view.unprivileged'),
   require('freedom/providers/core/websocket.unprivileged')
 ];

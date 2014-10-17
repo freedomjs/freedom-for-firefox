@@ -11,11 +11,6 @@
  * - Unit tests for sanity checking possible without actually launching firefox
  * test
  * - Build and run firefox extension for integration tests
- * debug
- * - Same as test, but browser remains open & watching for changes.
- * ci
- * - Continuous Integration target
- * - Code coverage reports
  **/
 
 var freedomPrefix = require('path').dirname(require.resolve('freedom'));

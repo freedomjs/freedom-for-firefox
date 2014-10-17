@@ -60,8 +60,8 @@ runTests = function(done) {
   env.addReporter(loggingReporter);
 
 
-  require('../spec/tcp_socket.unit.spec');
-  require('../spec/udp_socket.unit.spec');
+  require('../spec/core.tcpsocket.unit.spec');
+  require('../spec/core.udpsocket.unit.spec');
   require('../spec/provider.integration.spec');
 
   var specs = [];

@@ -1,8 +1,8 @@
 var ClientSocket = require('../providers/client_socket');
 var ServerSocket = require('../providers/server_socket');
-var provider = require('../providers/tcp_socket');
+var provider = require('../providers/core.tcpsocket');
 
-describe("tcp sockets", function() {
+describe("unit: core.tcpsocket", function() {
   var clientSocket, serverSocket;
   beforeEach(function() {
     serverSocket = new ServerSocket("localhost", 8081);

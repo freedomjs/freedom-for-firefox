@@ -1,6 +1,6 @@
-var provider = require('../providers/udp_socket');
+var provider = require('../providers/core.udpsocket');
 
-describe("udp socket", function() {
+describe("unit: core.udpsocket", function() {
   var socket, serverDispatchEvent;
   const listenPort = 8082,
         sendPort = 8083;
