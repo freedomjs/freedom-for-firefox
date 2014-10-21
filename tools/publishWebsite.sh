@@ -12,12 +12,12 @@ git clone git@github.com:freedomjs/freedomjs.github.io.git tools/freedomjs
 
 # Copy latest release
 mkdir -p tools/freedomjs/dist/freedom-for-firefox
-cp freedom-for-firefox.js tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.js
-#cp freedom-for-firefox.js.map tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.js.map
+cp freedom-for-firefox.jsm tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.jsm
+#cp freedom-for-firefox.jsm.map tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.jsm.map
 
 # Link to the latest
 rm -f tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.js*
-ln -s freedom-for-firefox.$TAG.js tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.js
+ln -s freedom-for-firefox.$TAG.jsm tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.jsm
 #ln -s freedom-for-firefox.$TAG.js.map tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.js.map
 
 # Commit
