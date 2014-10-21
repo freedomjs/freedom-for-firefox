@@ -1,11 +1,8 @@
 freedom-for-firefox
 ===================
+A freedom.js distribution for inclusion in Firefox extensions.
 
-A freedom.js Distribution for inclusion in Firefox extensions.
-
-Installation
-------------
-
+# Installation
 Generate a [javascript code module](https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules) by running the default grunt task with `grunt`.
 
 Place the generated `freedom-for-firefox.jsm` somewhere in your extension file structure. In the case of jetpack addons, you will likely want to place `freedom-for-firefox.jsm` somehwere in the data dir. To include it in jetpack addon, use:
@@ -29,10 +26,12 @@ This will define the function `setupFreedom` in the current scope. `setupFreedom
 
 NOTE: The behavior of calling `setupFreedom` more than once is undefined.
 
+# Testing
+`grunt test` will build an extension with the jasmine specs and run the tests in Firefox.
 
-Testing
--------
+# FAQ
+- Mac OS X firewalls have been known to block WebRTC when set to its strictest setting.
+  Be sure to allow an exception for Firefox for integration tests to pass
+- Tests will fail if you leave windows open in Firefox when tests complete (e.g. the browser console)
+  Be sure to either close windows quickly or leave the browser window alone during test
 
-Running the command `grunt build_test` will create a `build/test` directory from the `test` directory and files included via npm. Navigate to that directory with the cfx tool activated and run `cfx run` to run the tests.
-
-The testing framework does not currently run the all the unit tests that run in the browser. The current tests are in the test/data directory. They run on Jasmine 2.0, and report directly into the terminal that the command `cfx run` was run from.
