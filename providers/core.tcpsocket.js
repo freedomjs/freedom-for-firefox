@@ -32,10 +32,9 @@ Socket_firefox.prototype.close = function(continuation) {
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(hostname, port, false);
+  this.clientSocket.connect(hostname, port, false, continuation);
   this.hostname = hostname;
   this.port = port;
-  continuation();
 };
 
 Socket_firefox.prototype.prepareSecure = function(continuation) {

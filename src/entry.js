@@ -1,8 +1,10 @@
 var providers = [
   require('freedom/providers/core/core.unprivileged'),
   require('freedom/providers/core/echo.unprivileged'),
-  require('freedom/providers/core/logger.console'),
+  require('freedom/providers/core/console.unprivileged'),
   require('freedom/providers/core/peerconnection.unprivileged'),
+  require('freedom/providers/core/core.rtcpeerconnection'),
+  require('freedom/providers/core/core.rtcdatachannel'),
   require('../providers/core.tcpsocket'),
   require('../providers/core.udpsocket'),
   require('../providers/core.storage'),

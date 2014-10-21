@@ -5,7 +5,7 @@ var setup = function () {
   testUtil.setSpecBase(base);
   testUtil.setCoreProviders([
     require('freedom/providers/core/core.unprivileged'),
-    require('freedom/providers/core/logger.console'),
+    require('freedom/providers/core/console.unprivileged'),
     require('freedom/providers/core/peerconnection.unprivileged'),
     require('freedom/providers/core/websocket.unprivileged'),
     require('../providers/core.storage')
@@ -36,4 +36,4 @@ describe("integration: transport.webrtc.json",
 
 describe("integration: core.tcpsocket",
     require('freedom/spec/providers/coreIntegration/tcpsocket.integration.src').bind(this,
-    require('../providers/core.tcp_socket'), setup));
+    require('../providers/core.tcpsocket'), setup));
