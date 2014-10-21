@@ -1,4 +1,8 @@
-  describe("tcp sockets", function() {
+var ClientSocket = require('../providers/client_socket');
+var ServerSocket = require('../providers/server_socket');
+var provider = require('../providers/core.tcpsocket');
+
+describe("unit: core.tcpsocket", function() {
   var clientSocket, serverSocket;
   beforeEach(function() {
     serverSocket = new ServerSocket("localhost", 8081);
@@ -72,7 +76,7 @@
       }
     };
     var continuation = function() {};
-    var socket = new Socket_firefox(undefined, dispatchEvent, undefined);
+    var socket = new provider.provider(undefined, dispatchEvent, undefined);
     socket.connect('chat.facebook.com', 5222, continuation);
     socket.write(str2ab(INIT_XMPP), continuation);
   });

@@ -26,6 +26,13 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
   try {
     bytesAvailable = binaryReader.available();
   } catch (e) {
+    if (this.socket.onConnect) {
+      this.socket.onConnect(undefined, {
+        errcode: 'CONNECTION_FAILED',
+        message: 'Firefox Connection Failed: ' + e.name
+      });
+      delete this.socket.onConnect;
+    }
     // The error name is NS_BASE_STREAM_CLOSED if the connection
     // closed normally.
     if (e.name !== 'NS_BASE_STREAM_CLOSED') {
@@ -33,6 +40,10 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
     }
     this.socket.close();
     return;
+  }
+  if (this.socket.onConnect) {
+    this.socket.onConnect();
+    delete this.socket.onConnect;
   }
 
   var lineData = binaryReader.readByteArray(bytesAvailable);
@@ -73,12 +84,18 @@ ClientSocket.prototype._setupTransport = function(transport) {
   // set up writers
   this.outputStream = transport.openOutputStream(0, 0, 0);
 
+  // set up on connect handler
+  this.transport.setEventSink(this, mainThread);
 };
 
-ClientSocket.prototype.connect = function(hostname, port, startTls) {
+ClientSocket.prototype.connect = function(hostname, port, startTls, continuation) {
   if (typeof this.transport !== 'undefined') {
-    throw new Error('Socket already connected');
+    return continuation(undefined, {
+      errcode: 'ALREADY_CONNECTED ',
+      message: 'Socket already connected'
+    });
   }
+  this.onConnect = continuation;
 
   var socketTypes = startTls ? ['starttls'] : [null];
   var numSocketTypes = startTls ? 1 : 0;
@@ -91,6 +108,15 @@ ClientSocket.prototype.connect = function(hostname, port, startTls) {
   this.socketType = 'tcp';
 };
 
+// Called due to the setEventSync call.
+ClientSocket.prototype.onTransportStatus = function (transport, status) {
+  if (status == Components.interfaces.nsISocketTransport.STATUS_CONNECTED_TO &&
+     this.onConnect) {
+    this.onConnect();
+    delete this.onConnect;
+  }
+};
+
 // TODO: This writ is happening async, so result should be returned async
 ClientSocket.prototype.write = function(data) {
   var stringData = this.arrayBufferToString(data);
@@ -100,7 +126,9 @@ ClientSocket.prototype.write = function(data) {
 ClientSocket.prototype.close = function() {
   this.binaryReader.close(0);
   this.rawInputStream.close(0);
-  this.transport.close(0);
+  if (this.transport) {
+    this.transport.close(0);
+  }
   // Delete transport so getInfo doesn't think we are connected
   delete this.transport; 
   if (typeof this.onDisconnect === 'function') {
@@ -136,3 +164,5 @@ ClientSocket.prototype.setOnDataListener = function(listener) {
 ClientSocket.prototype.arrayBufferToString = function(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
 };
+
+module.exports = ClientSocket;

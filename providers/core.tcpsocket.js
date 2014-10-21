@@ -1,5 +1,5 @@
-Socket_firefox.incommingConnections = {};
-Socket_firefox.socketNumber = 1;
+var ClientSocket = require('./client_socket');
+var ServerSocket = require('./server_socket');
 
 function Socket_firefox(channel, dispatchEvent, socketId) {
   var incommingConnections = Socket_firefox.incommingConnections;
@@ -11,6 +11,9 @@ function Socket_firefox(channel, dispatchEvent, socketId) {
     this.clientSocket.setOnDataListener(this._onData.bind(this));
   }
 }
+
+Socket_firefox.incommingConnections = {};
+Socket_firefox.socketNumber = 1;
 
 Socket_firefox.prototype.getInfo = function(continuation) {
   if(this.clientSocket) {
@@ -29,10 +32,9 @@ Socket_firefox.prototype.close = function(continuation) {
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(hostname, port, false);
+  this.clientSocket.connect(hostname, port, false, continuation);
   this.hostname = hostname;
   this.port = port;
-  continuation();
 };
 
 Socket_firefox.prototype.prepareSecure = function(continuation) {
@@ -94,6 +96,5 @@ Socket_firefox.prototype._onConnect = function(clientSocket) {
 };
 
 /** REGISTER PROVIDER **/
-if (typeof fdom !== 'undefined') {
-  fdom.apis.register("core.tcpsocket", Socket_firefox);
-}
+exports.provider = Socket_firefox;
+exports.api = "core.tcpsocket";

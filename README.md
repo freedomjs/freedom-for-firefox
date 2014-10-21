@@ -1,38 +1,42 @@
 freedom-for-firefox
 ===================
+A freedom.js distribution for inclusion in Firefox extensions.
 
-A freedom.js Distribution for inclusion in Firefox extensions.
+# Installation
+The freedom-for-firefox npm package contains a generated [javascript code module](https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules), freedom-for-firefox.jsm. This file can be included in your firefox
+addon to interact with freedom.
 
-Installation
-------------
+`freedom-for-firefox.jsm` can be placed anywhere in your extension file structure. In the case of jetpack addons, you will likely want to place it somewhere in the data dir. To include it in jetpack addon, use:
 
-Generate a [javascript code module](https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules) by running the default grunt task with `grunt`.
-
-Place the generated `freedom-for-firefox.jsm` somewhere in your extension file structure. In the case of jetpack addons, you will likely want to place `freedom-for-firefox.jsm` somehwere in the data dir. To include it in jetpack addon, use:
-
-    const {Cu} = require("chrome");
-    Cu.import(self.data.url(PATH TO .jsm RELATIVE TO DATA DIRECTORY))
+```javascript
+const {Cu} = require("chrome");
+// Note: data.url is relative to your data directory
+Cu.import(self.data.url("freedom-for-firefox.jsm"))
+```
 
 Or in classic firefox extensions use:
 
-    Components.utils.import(PATH TO .jsm);
+```javascript
+Components.utils.import("freedom-for-firefox.jsm");
+```
 
+This will define the function `freedom` in the current scope, which behaves the same way as
+freedom in any other context.
 
-This will define the function `setupFreedom` in the current scope. `setupFreedom` takes two arguments:
-  - manifest: the path to the freedom manifest file.
-  - options: an dictionary mapping various options
-    - debug: true for debugging output.
-    - freedomcfg: the freedomcfg function for defining new freedom apis.
-    - portType: Type of port. Default is Worker. BackgroundFrame is available for debugging purposes.
+# Testing
+`grunt test` will build an extension with jasmine integration tests and run the tests in Firefox.
+You can extend this with your own tasks, by including this dependency in your own grunt project:
 
-`setupFreedom` returns a freedom object.
+```javascript
+grunt.loadNpmTasks('freedom-for-firefox');
+```
 
-NOTE: The behavior of calling `setupFreedom` more than once is undefined.
+You would then configure the `build-test-addon` task with your own jasmine tests, similarly to
+how it is run by this project.
 
+# FAQ
+- Mac OS X firewalls have been known to block WebRTC when set to its strictest setting.
+  Be sure to allow an exception for Firefox for integration tests to pass
+- Tests will fail if you leave windows open in Firefox when tests complete (e.g. the browser console)
+  Be sure to either close windows quickly or leave the browser window alone during test
 
-Testing
--------
-
-Running the command `grunt build_test` will create a `build/test` directory from the `test` directory and files included via npm. Navigate to that directory with the cfx tool activated and run `cfx run` to run the tests.
-
-The testing framework does not currently run the all the unit tests that run in the browser. The current tests are in the test/data directory. They run on Jasmine 2.0, and report directly into the terminal that the command `cfx run` was run from.

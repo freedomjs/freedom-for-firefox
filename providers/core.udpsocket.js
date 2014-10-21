@@ -1,11 +1,11 @@
-function Udp_firefox(channel, dispatchEvent) {
+function UDP_Firefox(channel, dispatchEvent) {
   this.dispatchEvent = dispatchEvent;
   // http://dxr.mozilla.org/mozilla-central/source/netwerk/base/public/nsIUDPSocket.idl
   this._nsIUDPSocket = Components.classes["@mozilla.org/network/udp-socket;1"]
     .createInstance(Components.interfaces.nsIUDPSocket);
 }
 
-Udp_firefox.prototype.bind = function(address, port, continuation) {
+UDP_Firefox.prototype.bind = function(address, port, continuation) {
   if (port < 1) {
     port = -1;
   }
@@ -18,7 +18,7 @@ Udp_firefox.prototype.bind = function(address, port, continuation) {
   }
 };
 
-Udp_firefox.prototype.getInfo = function(continuation) {
+UDP_Firefox.prototype.getInfo = function(continuation) {
   var returnValue = {
     localAddress: "127.0.0.1",
     localPort: this._nsIUDPSocket
@@ -26,7 +26,7 @@ Udp_firefox.prototype.getInfo = function(continuation) {
   continuation(returnValue);
 };
 
-Udp_firefox.prototype.sendTo = function(buffer, address, port, continuation) {
+UDP_Firefox.prototype.sendTo = function(buffer, address, port, continuation) {
   var asArray = [];
   var view = new Uint8Array(buffer);
   for (var i = 0; i < buffer.byteLength; i++) {
@@ -39,7 +39,7 @@ Udp_firefox.prototype.sendTo = function(buffer, address, port, continuation) {
   continuation(bytesWritten);
 };
 
-Udp_firefox.prototype.destroy = function(continuation) {
+UDP_Firefox.prototype.destroy = function(continuation) {
   this._nsIUDPSocket.close();
   continuation();
 };
@@ -74,6 +74,5 @@ nsIUDPSocketListener.prototype.str2ab = function(str) {
 };
 
 /** REGISTER PROVIDER **/
-if (typeof fdom !== 'undefined') {
-  fdom.apis.register("core.udpsocket", Udp_firefox);
-}
+exports.provider = UDP_Firefox;
+exports.api = "core.udpsocket";

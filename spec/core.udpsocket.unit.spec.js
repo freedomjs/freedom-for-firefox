@@ -1,10 +1,12 @@
-describe("udp socket", function() {
+var provider = require('../providers/core.udpsocket');
+
+describe("unit: core.udpsocket", function() {
   var socket, serverDispatchEvent;
   const listenPort = 8082,
         sendPort = 8083;
   beforeEach(function() {
     serverDispatchEvent = jasmine.createSpy("dispatchEvent");
-    socket = new Udp_firefox(undefined, serverDispatchEvent);
+    socket = new provider.provider(undefined, serverDispatchEvent);
   });
 
   it("binds", function(done) {
@@ -22,7 +24,7 @@ describe("udp socket", function() {
     const sendString = "Hello World",
           sendBuffer = str2ab(sendString),
           clientDispatchEvent = jasmine.createSpy("dispatchEvent"),
-          sendingSocket = new Udp_firefox(undefined, clientDispatchEvent),
+          sendingSocket = new provider.provider(undefined, clientDispatchEvent),
           sendContinuation = jasmine.createSpy("sendContinuation"),
           bindContinuation = jasmine.createSpy("bindContinuation");
 
