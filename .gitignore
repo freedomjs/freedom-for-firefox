@@ -4,3 +4,4 @@ node_modules
 spec.jsm
 .build
 tmp/
+tools/freedomjs

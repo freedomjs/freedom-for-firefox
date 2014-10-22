@@ -5,7 +5,12 @@ Components.utils.import('resource://gre/modules/Services.jsm');
 XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1", "nsIXMLHttpRequest");
 
 var hiddenWindow = Services.appShell.hiddenDOMWindow;
+mozRTCPeerConnection = hiddenWindow.mozRTCPeerConnection;
+mozRTCSessionDescription = hiddenWindow.mozRTCSessionDescription;
+mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
+
 Blob = hiddenWindow.Blob;
+WebSocket = hiddenWindow.WebSocket;
 
 var jasmineRequire = require('jasmine-core/lib/jasmine-core/jasmine');
 jasmine = jasmineRequire.core(jasmineRequire);
@@ -55,8 +60,8 @@ runTests = function(done) {
   env.addReporter(loggingReporter);
 
 
-  require('../spec/tcp_socket.unit.spec');
-  require('../spec/udp_socket.unit.spec');
+  require('../spec/core.tcpsocket.unit.spec');
+  require('../spec/core.udpsocket.unit.spec');
   require('../spec/provider.integration.spec');
 
   var specs = [];
