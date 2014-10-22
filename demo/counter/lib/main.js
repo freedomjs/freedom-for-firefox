@@ -30,7 +30,7 @@ var counter;
 
 function handleClick(state) {
   if (!counter) {
-    freedom(self.data.url('counter.json'), {portType: 'backgroundFrame'}).then(function (constructor) {
+    freedom(self.data.url('counter.json')).then(function (constructor) {
       counter = constructor(0);
       counter.on('update', function (n) {
         panel.port.emit('update', n);
