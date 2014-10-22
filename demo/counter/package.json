@@ -1,0 +1,9 @@
+{
+  "name": "counter",
+  "title": "counter",
+  "id": "jid1-LKPXCGtacBuYkA",
+  "description": "a basic counter add-on using freedom.js",
+  "author": "Will Scott <willscott@gmail.com> (https://wills.co.tt)",
+  "license": "Apache 2.0",
+  "version": "0.1"
+}
