@@ -75,6 +75,8 @@ module.exports = function (grunt) {
         pushTo: 'origin'
       }
     },
+    clean: ['freedom-for-firefox.jsm', 'freedom.map', 'node_modules/', 'spec.jsm',
+            '.build/', 'tmp/', 'tools/freedomjs/'],
     'npm-publish': {
       options: {
         // list of tasks that are required before publishing
@@ -107,6 +109,7 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-prompt');
   grunt.loadNpmTasks('grunt-bump');
@@ -124,7 +127,7 @@ module.exports = function (grunt) {
     'browserify:jasmine',
     'integration'
   ]);
-  
+
   grunt.registerTask('release', function(arg) {
     if (arguments.length === 0) {
       arg = 'patch';

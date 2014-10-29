@@ -20,8 +20,8 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
 
 UDP_Firefox.prototype.getInfo = function(continuation) {
   var returnValue = {
-    localAddress: "127.0.0.1",
-    localPort: this._nsIUDPSocket
+    localAddress: "localhost",
+    localPort: this._nsIUDPSocket.port
   };
   continuation(returnValue);
 };
@@ -65,7 +65,7 @@ nsIUDPSocketListener.prototype.onStopListening = function(nsIUDPSocket,
 };
 
 nsIUDPSocketListener.prototype.str2ab = function(str) {
-  var buf = new ArrayBuffer(str.length); 
+  var buf = new ArrayBuffer(str.length);
   var bufView = new Uint8Array(buf);
   for (var i=0, strLen=str.length; i<strLen; i++) {
     bufView[i] = str.charCodeAt(i);
