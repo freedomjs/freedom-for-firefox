@@ -35,7 +35,7 @@
     "grunt-prompt": "^1.2.1",
     "grunt-shell": "^1.1.1",
     "jasmine-core": "^2.0.4",
-    "webrtc-adapter": "0.0.3"
+    "webrtc-adapter": "0.0.5"
   },
   "peerDependencies": {
     "freedom": "~0.6.2"

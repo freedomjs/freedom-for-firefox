@@ -97,4 +97,4 @@ Socket_firefox.prototype._onConnect = function(clientSocket) {
 
 /** REGISTER PROVIDER **/
 exports.provider = Socket_firefox;
-exports.api = "core.tcpsocket";
+exports.name = "core.tcpsocket";

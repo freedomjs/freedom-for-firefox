@@ -75,4 +75,4 @@ nsIUDPSocketListener.prototype.str2ab = function(str) {
 
 /** REGISTER PROVIDER **/
 exports.provider = UDP_Firefox;
-exports.api = "core.udpsocket";
+exports.name = "core.udpsocket";
