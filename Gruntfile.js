@@ -1,3 +1,4 @@
+/*jslint node:true*/
 /**
  * Gruntfile for freedom-for-firefox.jsm
  *
@@ -16,6 +17,7 @@
 var freedomPrefix = require('path').dirname(require.resolve('freedom'));
 
 module.exports = function (grunt) {
+  'use strict';
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
@@ -82,7 +84,7 @@ module.exports = function (grunt) {
         // list of tasks that are required before publishing
         requires: [],
         // if the workspace is dirty, abort publishing (to avoid publishing local changes)
-        abortIfDirty: true,
+        abortIfDirty: true
       }
     },
     prompt: {
@@ -93,7 +95,7 @@ module.exports = function (grunt) {
               config: 'bump.options.tagMessage',
               type: 'input',
               message: 'Enter a git tag message:',
-              default: 'v%VERSION%',
+              default: 'v%VERSION%'
             }
           ]
         }
@@ -128,14 +130,14 @@ module.exports = function (grunt) {
     'integration'
   ]);
 
-  grunt.registerTask('release', function(arg) {
+  grunt.registerTask('release', function (arg) {
     if (arguments.length === 0) {
       arg = 'patch';
     }
     grunt.task.run([
       'default',
       'prompt:tagMessage',
-      'bump:'+arg,
+      'bump:' + arg,
       'npm-publish',
       'shell:publishWebsite'
     ]);
