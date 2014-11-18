@@ -30,16 +30,25 @@ if (typeof Components !== 'undefined') {
   WebSocket = hiddenWindow.WebSocket;
   Components.utils.importGlobalProperties(['URL']);
 
-  freedom = require('freedom/src/entry').bind({}, {
-    location: "resource://",
-    portType: require('freedom/src/link/worker'),
-    source: Components.stack.filename,
-    providers: providers,
-    isModule: false,
-    oauth: [
-      require('../providers/oauth/oauth.tabs'),
-    ]
-  });
+freedom = function (manifest, options) {
+    var port = require('freedom/src/link/worker'),
+        alternatePort = require('./backgroundframe-link'),
+        source = Components.stack.filename;
+    if (options && options.portType === 'backgroundFrame') {
+      port = alternatePort;
+      source = options.source;
+    }
+    return require('freedom/src/entry')({
+      location: "resource://",
+      portType: port,
+      source: source,
+      providers: providers,
+      isModule: false,
+      oauth: [
+        require('../providers/oauth/oauth.tabs'),
+      ]
+    }, manifest, options);
+  };
   EXPORTED_SYMBOLS = ["freedom"];
 } else {
   // When loaded in a worker.
