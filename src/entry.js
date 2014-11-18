@@ -37,8 +37,7 @@ if (typeof Components !== 'undefined') {
     providers: providers,
     isModule: false,
     oauth: [
-      //@todo oauth
-      //require();
+      require('../providers/oauth/oauth.tabs'),
     ]
   });
   EXPORTED_SYMBOLS = ["freedom"];
