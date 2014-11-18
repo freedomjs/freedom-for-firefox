@@ -47,7 +47,7 @@ describe("integration: core.udpsocket",
 
 describe("integration: core.oauth - tabs",
     require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,
-    require("freedom/providers/core/core.oauth"), 
+    require("freedom/providers/core/core.oauth"),
     [ require("../providers/oauth/oauth.tabs") ],
     [ "https://localhost:8000/" ],
     setup));

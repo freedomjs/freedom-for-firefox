@@ -1,6 +1,13 @@
 /*globals console*/
 /*jslint indent:2,browser:true, node:true */
-var Tabs = require("sdk/tabs");
+var mainWindow;
+if (typeof Components !== 'undefined') {
+  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+              .getService(Components.interfaces.nsIWindowMediator);
+  mainWindow = wm.getMostRecentWindow("navigator:browser");
+} else {
+  console.warn('core.oauth cannot access window.');
+}
 
 var oAuthRedirectId = "freedom.oauth.redirect.handler";
 
@@ -11,7 +18,7 @@ var FirefoxTabsAuth = function() {
 FirefoxTabsAuth.prototype.initiateOAuth = function(redirectURIs, continuation) {
   "use strict";
   var i;
-  if (typeof Tabs !== 'undefined') {
+  if (typeof mainWindow !== 'undefined') {
     for (i = 0; i < redirectURIs.length; i += 1) {
       if (redirectURIs[i].indexOf('https://') === 0 ||
           redirectURIs[i].indexOf('http://') === 0) {
@@ -28,6 +35,7 @@ FirefoxTabsAuth.prototype.initiateOAuth = function(redirectURIs, continuation) {
 };
 
 FirefoxTabsAuth.prototype.launchAuthFlow = function(authUrl, stateObj, continuation) {
+  /**
   Tabs.open({
     url: authUrl,
     isPrivate: true,
@@ -38,6 +46,13 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function(authUrl, stateObj, continuat
       }
     }.bind(this, stateObj, continuation)
   });
+  **/
+  var tab = mainWindow.gBrowser.addTab(authUrl);
+  mainWindow.gBrowser.selectedTab = tab;
+  var newTabBrowser = mainWindow.gBrowser.getBrowserForTab(tab);
+  newTabBrowser.addEventListener("load", function () {
+      //newTabBrowser.contentDocument.body.innerHTML = "<div>hello world</div>div>";
+  }, true);
 };
 
 /**
