@@ -8,15 +8,10 @@ var providers = [
   require('../providers/core.tcpsocket'),
   require('../providers/core.udpsocket'),
   require('../providers/core.storage'),
-  require('freedom/providers/core/view.unprivileged'),
+  require('freedom/providers/core/core.view'),
+  require('freedom/providers/core/core.oauth'),
   require('freedom/providers/core/websocket.unprivileged')
 ];
-
-var oauth = require('freedom/providers/core/oauth');
-//TODO: oauth
-//require('../providers/oauth').register(oauth);
-providers.push(oauth);
-
 
 // When included as a jsm file.
 if (typeof Components !== 'undefined') {
@@ -40,7 +35,11 @@ if (typeof Components !== 'undefined') {
     portType: require('freedom/src/link/worker'),
     source: Components.stack.filename,
     providers: providers,
-    isModule: false
+    isModule: false,
+    oauth: [
+      //@todo oauth
+      //require();
+    ]
   });
   EXPORTED_SYMBOLS = ["freedom"];
 } else {
