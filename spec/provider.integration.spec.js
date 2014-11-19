@@ -49,5 +49,5 @@ describe("integration: core.oauth - tabs",
     require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,
     require("freedom/providers/core/core.oauth"),
     [ require("../providers/oauth/oauth.tabs") ],
-    [ "https://localhost:8000/" ],
+    [ "https://localhost:9876/" ],
     setup));

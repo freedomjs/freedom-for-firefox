@@ -1,10 +1,11 @@
 /*globals console*/
 /*jslint indent:2,browser:true, node:true */
-var mainWindow;
+var gBrowser;
 if (typeof Components !== 'undefined') {
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
               .getService(Components.interfaces.nsIWindowMediator);
-  mainWindow = wm.getMostRecentWindow("navigator:browser");
+  gBrowser = wm.getMostRecentWindow("navigator:browser").gBrowser;
+  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 } else {
   console.warn('core.oauth cannot access window.');
 }
@@ -18,7 +19,7 @@ var FirefoxTabsAuth = function() {
 FirefoxTabsAuth.prototype.initiateOAuth = function(redirectURIs, continuation) {
   "use strict";
   var i;
-  if (typeof mainWindow !== 'undefined') {
+  if (typeof gBrowser !== 'undefined') {
     for (i = 0; i < redirectURIs.length; i += 1) {
       if (redirectURIs[i].indexOf('https://') === 0 ||
           redirectURIs[i].indexOf('http://') === 0) {
@@ -35,28 +36,41 @@ FirefoxTabsAuth.prototype.initiateOAuth = function(redirectURIs, continuation) {
 };
 
 FirefoxTabsAuth.prototype.launchAuthFlow = function(authUrl, stateObj, continuation) {
-  /**
-  Tabs.open({
-    url: authUrl,
-    isPrivate: true,
-    onLoad: function onLoad(stateObj, continuation, tab) {
-      if (tab.url.startsWith(stateObj.redirect)) {
-        continuation(tab.url);
-        tab.close();
+  "use strict";
+  var myExtension = {
+    stateObj: stateObj,
+    continuation: continuation,
+    oldURL: null,
+    tab: gBrowser.addTab(authUrl),
+    init: function() {
+      gBrowser.addProgressListener(this);
+      gBrowser.selectedTab = this.tab;
+    },
+    uninit: function() {
+      gBrowser.removeProgressListener(this);
+    },
+    processNewURL: function(aURI) {
+      if (aURI.spec == this.oldURL) return;
+      this.oldURL = aURI.spec;
+      if (aURI.spec.startsWith(this.stateObj.redirect)) {
+        this.continuation(aURI.spec);
+        gBrowser.removeCurrentTab(this.tab);
+        this.uninit();
       }
-    }.bind(this, stateObj, continuation)
-  });
-  **/
-  var tab = mainWindow.gBrowser.addTab(authUrl);
-  mainWindow.gBrowser.selectedTab = tab;
-  var newTabBrowser = mainWindow.gBrowser.getBrowserForTab(tab);
-  newTabBrowser.addEventListener("load", function () {
-      //newTabBrowser.contentDocument.body.innerHTML = "<div>hello world</div>div>";
-  }, true);
+    },
+    QueryInterface: XPCOMUtils.generateQI(["nsIWebProgressListener", "nsISupportsWeakReference"]),
+    onLocationChange: function(aProgress, aRequest, aURI) {
+      this.processNewURL(aURI);
+    },
+    onStateChange: function() {},
+    onProgressChange: function() {},
+    onStatusChange: function() {},
+    onSecurityChange: function() {}
+  };
+  myExtension.init();
 };
 
 /**
- * If we have access to chrome.identity, use the built-in support for oAuth flows
- * chrome.identity exposes a very similar interface to core.oauth.
+ * Leverage Firefox support to manipulate tabs and intercept page loads
  */
 module.exports = FirefoxTabsAuth;
