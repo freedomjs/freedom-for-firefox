@@ -38,7 +38,7 @@
     "webrtc-adapter": "0.0.5"
   },
   "peerDependencies": {
-    "freedom": "~0.6.2"
+    "freedom": "0.6.6"
   },
   "scripts": {}
 }
