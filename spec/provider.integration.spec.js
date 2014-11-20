@@ -38,6 +38,16 @@ describe("integration: core.tcpsocket",
     require('freedom/spec/providers/coreIntegration/tcpsocket.integration.src').bind(this,
     require('../providers/core.tcpsocket'), setup));
 
+/**
+// Restore when udpsocket integration test has been fixed
 describe("integration: core.udpsocket",
     require('freedom/spec/providers/coreIntegration/udpsocket.integration.src').bind(this,
     require('../providers/core.udpsocket'), setup));
+**/
+
+describe("integration: core.oauth - tabs",
+    require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,
+    require("freedom/providers/core/core.oauth"),
+    [ require("../providers/oauth/oauth.tabs") ],
+    [ "https://localhost:9876/" ],
+    setup));

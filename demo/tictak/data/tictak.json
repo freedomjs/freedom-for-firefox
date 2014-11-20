@@ -1,0 +1,24 @@
+{
+  "name": "TicTakToe",
+  "description": "Tictak Sample freedom.js application",
+  "app": {
+    "script": "tictak.js"
+  },
+  "provides": ["tictak"],
+  "default": "tictak",
+  "api": {
+    "tictak": {
+      "constructor": {
+        "value": ["number"]
+      },
+      "click": {
+        "type": "method",
+        "value": ["number"]
+      },
+      "update": {
+        "type": "event",
+        "value": "number"
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "About Me",
+  "description": "About Me Sample freedom.js application",
+  "app": {
+    "script": "aboutme.js"
+  },
+  "permissions": ["core.oauth"]
+}

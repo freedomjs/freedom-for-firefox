@@ -1,0 +1,9 @@
+{
+  "name": "tictak",
+  "title": "tictak",
+  "id": "jid1-LKPXCGtacBuYkB",
+  "description": "a basic tictak add-on using freedom.js",
+  "author": "Will Scott <willscott@gmail.com> (https://wills.co.tt)",
+  "license": "Apache 2.0",
+  "version": "0.1"
+}

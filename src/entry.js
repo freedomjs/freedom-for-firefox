@@ -8,15 +8,10 @@ var providers = [
   require('../providers/core.tcpsocket'),
   require('../providers/core.udpsocket'),
   require('../providers/core.storage'),
-  require('freedom/providers/core/view.unprivileged'),
+  require('freedom/providers/core/core.view'),
+  require('freedom/providers/core/core.oauth'),
   require('freedom/providers/core/websocket.unprivileged')
 ];
-
-var oauth = require('freedom/providers/core/oauth');
-//TODO: oauth
-//require('../providers/oauth').register(oauth);
-providers.push(oauth);
-
 
 // When included as a jsm file.
 if (typeof Components !== 'undefined') {
@@ -35,13 +30,25 @@ if (typeof Components !== 'undefined') {
   WebSocket = hiddenWindow.WebSocket;
   Components.utils.importGlobalProperties(['URL']);
 
-  freedom = require('freedom/src/entry').bind({}, {
-    location: "resource://",
-    portType: require('freedom/src/link/worker'),
-    source: Components.stack.filename,
-    providers: providers,
-    isModule: false
-  });
+freedom = function (manifest, options) {
+    var port = require('freedom/src/link/worker'),
+        alternatePort = require('./backgroundframe-link'),
+        source = Components.stack.filename;
+    if (options && options.portType === 'backgroundFrame') {
+      port = alternatePort;
+      source = options.source;
+    }
+    return require('freedom/src/entry')({
+      location: "resource://",
+      portType: port,
+      source: source,
+      providers: providers,
+      isModule: false,
+      oauth: [
+        require('../providers/oauth/oauth.tabs'),
+      ]
+    }, manifest, options);
+  };
   EXPORTED_SYMBOLS = ["freedom"];
 } else {
   // When loaded in a worker.

@@ -1,0 +1,9 @@
+{
+  "name": "aboutme",
+  "title": "aboutme",
+  "id": "jid1-LKPXCGtacBuYkA",
+  "description": "About Me Sample freedom.js application",
+  "author": "Raymond Cheng <ryscheng@cs.washington.edu> (http://raymondcheng.net)",
+  "license": "Apache 2.0",
+  "version": "0.1"
+}

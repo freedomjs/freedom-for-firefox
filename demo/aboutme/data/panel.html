@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>About Me ~ freedom.js Demos</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <!--
+  <link href='../style.css' rel='stylesheet' type='text/css' />
+  -->
+
+  <style type="text/css">
+  #loginContainer {
+    margin-left: 20px;
+    margin-top: 50px;
+
+    display: inline-block;
+    background: #dd4b39;
+    color: white;
+    width: 105px;
+    border-radius: 5px;
+    white-space: nowrap;
+    vertical-align: middle;
+    padding-left: 10px;
+    padding-right: 35px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Roboto',arial,sans-sarif;
+  }
+  body.loaded #loginContainer {
+    display:none;
+  }
+  #profile {
+    display:none;
+  }
+  body.loaded #profile {
+    display:block;
+  }
+  #profile #header {
+    display: inline-block;
+    vertical-align: top;
+    font-family: helvetica;
+    color: black;
+  }
+  #profilepic {
+    max-width: 200px
+  }
+  #details {
+    word-break: break-word;
+  }
+  </style>
+</head>
+<body>
+  <header id='logo'>freedom.js</header>
+  <header><span class='triangle'>&#9654;</span> Demos</header>
+  <header><span class='triangle'>&#9654;</span> About Me</header>
+  <section>
+    <div id="loginContainer">
+      Sign in with Google
+    </div>
+    <div id="profile">
+      <img id="profilepic" />
+      <div id="header">
+        <h1 id="name"></h1>
+        <h2 id="subtitle"></h2>
+      </div>
+      <pre id="details"></pre>
+    </div>
+  </section>
+</body>
+</html>
