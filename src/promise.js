@@ -6,5 +6,5 @@ if (typeof Components !== 'undefined') {
 } else {
   // In Web Worker
   // Note: Uses full path in es6 to prevent recursion.
-  exports.Promise = require('es6-promise/dist/commonjs/main').Promise;
+  exports.Promise = require('es6-promise/dist/es6-promise').Promise;
 }

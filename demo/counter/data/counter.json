@@ -1,0 +1,24 @@
+{
+  "name": "Counter",
+  "description": "Counter Sample freedom.js application",
+  "app": {
+    "script": "counter.js"
+  },
+  "provides": ["counter"],
+  "default": "counter",
+  "api": {
+    "counter": {
+      "constructor": {
+        "value": ["number"]
+      },
+      "click": {
+        "type": "method",
+        "value": ["number"]
+      },
+      "update": {
+        "type": "event",
+        "value": "number"
+      }
+    }
+  }
+}

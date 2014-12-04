@@ -6,3 +6,4 @@ spec.jsm
 tmp/
 tools/freedomjs
 tools/bundle.compiled.js
+tools/frame.js

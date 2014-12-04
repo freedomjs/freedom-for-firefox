@@ -55,6 +55,11 @@ module.exports = function (grunt) {
           'spec.jsm': ['src/spec.js']
         }
       },
+      frame: {
+        files: {
+          'tools/frame.js': require.resolve('freedom/src/util/frameEntry.js')
+        }
+      },
       options: {
         transform: [['folderify', {global: true}]],
         alias: ['./src/promise.js:es6-promise']
@@ -116,12 +121,19 @@ module.exports = function (grunt) {
       publishWebsite: {
         command: 'bash tools/publishWebsite.sh'
       }
+    },
+    copy: {
+      demo: {
+        src: 'tools/frame.js',
+        dest: 'demo/tictak/data/freedom-frame.js'
+      }
     }
 
   });
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-prompt');
   grunt.loadNpmTasks('grunt-bump');
