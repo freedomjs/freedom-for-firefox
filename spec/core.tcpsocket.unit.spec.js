@@ -1,21 +1,23 @@
+
 var ClientSocket = require('../providers/client_socket');
 var ServerSocket = require('../providers/server_socket');
 var provider = require('../providers/core.tcpsocket');
 
 describe("unit: core.tcpsocket", function() {
   var clientSocket, serverSocket;
+  var portNumber = Math.floor((Math.random() * 999) + 8001);
   beforeEach(function() {
-    serverSocket = new ServerSocket("localhost", 8081);
+    serverSocket = new ServerSocket("localhost", portNumber);
     serverSocket.listen();
     clientSocket = new ClientSocket();
   });
-  
+
   it("connects", function(done) {
     serverSocket.onConnect = function(sock) {
       serverSocket.disconnect();
       done();
     };
-    clientSocket.connect("localhost", 8081, false);
+    clientSocket.connect("localhost", portNumber, false);
   });
 
   it("receives data", function(done) {
@@ -28,7 +30,7 @@ describe("unit: core.tcpsocket", function() {
         done();
       });
     };
-    clientSocket.connect("localhost", 8081, false);
+    clientSocket.connect("localhost", portNumber, false);
     clientSocket.write(str2ab(stringMessage));
   });
 
@@ -81,3 +83,4 @@ describe("unit: core.tcpsocket", function() {
     socket.write(str2ab(INIT_XMPP), continuation);
   });
 });
+
