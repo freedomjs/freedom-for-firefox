@@ -1,4 +1,4 @@
-function UDP_Firefox(channel, dispatchEvent) {
+function UDP_Firefox(cap, dispatchEvent) {
   this.dispatchEvent = dispatchEvent;
   // http://dxr.mozilla.org/mozilla-central/source/netwerk/base/public/nsIUDPSocket.idl
   this._nsIUDPSocket = Components.classes["@mozilla.org/network/udp-socket;1"]

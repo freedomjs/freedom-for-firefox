@@ -17,9 +17,8 @@ if (typeof Components !== 'undefined') {
  * A storage provider using firefox's sqlite storage.
  * @constructor
  */
-var Storage_ffox = function(channel, dispatch) {
+var Storage_ffox = function(cap, dispatch) {
   this.dispatchEvents = dispatch;
-  this.channel = channel;
 };
 
 /**

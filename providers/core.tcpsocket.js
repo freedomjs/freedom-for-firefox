@@ -1,7 +1,7 @@
 var ClientSocket = require('./client_socket');
 var ServerSocket = require('./server_socket');
 
-function Socket_firefox(channel, dispatchEvent, socketId) {
+function Socket_firefox(cap, dispatchEvent, socketId) {
   var incommingConnections = Socket_firefox.incommingConnections;
   this.dispatchEvent = dispatchEvent;
   this.socketId = socketId;

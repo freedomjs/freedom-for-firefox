@@ -27,6 +27,13 @@ module.exports = function (grunt) {
         '-W104': false
       }
     },
+    'create-interface-bundle': {
+      freedom: {
+        files: {
+          'tools/bundle.compiled.js': [freedomPrefix + '/interface/*.json']
+        }
+      }
+    },
     browserify: {
       freedom: {
         files: {
@@ -37,7 +44,10 @@ module.exports = function (grunt) {
             next(err, require('fs').readFileSync(
               require.resolve('freedom/src/util/header.txt')
             ) + src);
-          }
+          },
+          alias: [
+            './tools/bundle.compiled.js:freedomjs-interface-bundle'
+          ]
         }
       },
       jasmine: {
@@ -117,11 +127,13 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-npm');
   grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('freedom');
 
   grunt.loadTasks('tasks');
 
   grunt.registerTask('build', [
     'jshint:providers',
+    'create-interface-bundle',
     'browserify:freedom'
   ]);
   grunt.registerTask('test', [
