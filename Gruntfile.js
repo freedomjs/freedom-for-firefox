@@ -44,10 +44,7 @@ module.exports = function (grunt) {
             next(err, require('fs').readFileSync(
               require.resolve('freedom/src/util/header.txt')
             ) + src);
-          },
-          alias: [
-            './tools/bundle.compiled.js:freedomjs-interface-bundle'
-          ]
+          }
         }
       },
       jasmine: {
@@ -62,7 +59,10 @@ module.exports = function (grunt) {
       },
       options: {
         transform: [['folderify', {global: true}]],
-        alias: ['./src/promise.js:es6-promise']
+        alias: [
+          './src/promise.js:es6-promise',
+          './tools/bundle.compiled.js:freedomjs-interface-bundle'
+        ]
       }
     },
     "build-test-addon": {
