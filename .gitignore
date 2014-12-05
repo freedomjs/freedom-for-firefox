@@ -5,5 +5,4 @@ spec.jsm
 .build
 tmp/
 tools/freedomjs
-tools/bundle.compiled.js
 tools/frame.js
