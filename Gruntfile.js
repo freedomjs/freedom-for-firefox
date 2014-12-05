@@ -27,13 +27,6 @@ module.exports = function (grunt) {
         '-W104': false
       }
     },
-    'create-interface-bundle': {
-      freedom: {
-        files: {
-          'tools/bundle.compiled.js': [freedomPrefix + '/interface/*.json']
-        }
-      }
-    },
     browserify: {
       freedom: {
         files: {
@@ -60,8 +53,7 @@ module.exports = function (grunt) {
       options: {
         transform: [['folderify', {global: true}]],
         alias: [
-          './src/promise.js:es6-promise',
-          './tools/bundle.compiled.js:freedomjs-interface-bundle'
+          './src/promise.js:es6-promise'
         ]
       }
     },
@@ -145,7 +137,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'jshint:providers',
-    'create-interface-bundle',
     'browserify:freedom'
   ]);
   grunt.registerTask('test', [
