@@ -49,12 +49,13 @@ module.exports = function (grunt) {
             });
             req.on('end', function() {
               my.messages.push(JSON.parse(new Buffer(my.ip, 'base64').toString('ascii')));
+              grunt.log.write('- ' + my.messages[my.messages.length - 1].fullName + '\n');
               my.ip = '';
-              res.end('"Okay."');
+              res.end('{}');
             });
           } else if (req.url === '/ready') {
             grunt.log.writeln('Done.')
-            res.end('Okay.');
+            res.end('{}');
           }
         }).listen(ctx.port);
       };
@@ -68,7 +69,7 @@ module.exports = function (grunt) {
           options: {
             'mozilla-addon-sdk': "1_17",
             extension_dir: ctx.target,
-            command: "test",
+            command: "run",
             arguments: "-v"
           }
         }
@@ -104,6 +105,11 @@ module.exports = function (grunt) {
           }
           if (msg.status === 'passed') {
             grunt.log.ok(msg.fullName, msg.status);
+            if (msg.failedExpectations) {
+              msg.failedExpectations.forEach(function(exp) {
+                grunt.log.warn(exp.message);
+              });
+            }
           } else if (msg.status === 'failed') {
             grunt.log.error(msg.fullName, msg.status);
             if (msg.failedExpectations) {
@@ -167,7 +173,7 @@ module.exports = function (grunt) {
       var spath = s.path || s;
       var sname = s.name || s;
       if (!s.path || s.include) {
-        toLink += "files.push(Cu.import(self.data.url('" + sname + "')));\n";
+        toLink += "underTest = self.data.url('" + sname + "');\n";
       }
       var parent = path.dirname(sname);
       fs.mkdirpSync(ctx.dir + '/data/' + parent);
