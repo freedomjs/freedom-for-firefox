@@ -47,7 +47,6 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continua
     QueryInterface: XPCOMUtils.generateQI(["nsIWebProgressListener", "nsISupportsWeakReference"]),
 
     onLocationChange: function (progress, request, loc, flags) {
-      console.warn(loc.spec);
       if (loc.spec === this.oldURL) {
         return;
       }
