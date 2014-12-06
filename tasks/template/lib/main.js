@@ -11,6 +11,7 @@ var underTest = null;
 var tests = [];
 var pendingReports = 0;
 var onFinish = null;
+var stayOpen = false;
 
 var testDone = function(res) {
   pendingReports += 1;
@@ -30,10 +31,12 @@ var testDone = function(res) {
 };
 
 var completeTesting = function() {
-  //Cu.unload(underTest);
+  if (!stayOpen) {
+    Cu.unload(underTest);
 
-  var system = require("sdk/system");
-  system.exit(0);
+    var system = require("sdk/system");
+    system.exit(0);
+  }
 };
 
 var fileDone = function(res) {

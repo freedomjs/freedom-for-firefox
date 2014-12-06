@@ -15,7 +15,8 @@ module.exports = function (grunt) {
       template: 'tasks/template/',
       helper: undefined,
       timeout : 10000,
-      port: 9989
+      port: 9989,
+      stayOpen: false
     });
 
     if (!this.data.files) {
@@ -180,6 +181,9 @@ module.exports = function (grunt) {
       fs.copySync(spath, ctx.dir + '/data/' + sname);
     }
     toLink += "finishLoad();";
+    if (ctx.stayOpen) {
+      toLink += "\nstayOpen = true;";
+    }
     var buffer = new Buffer(toLink);
     
     fs.copySync(ctx.template, ctx.dir);
