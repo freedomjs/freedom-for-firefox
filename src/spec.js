@@ -35,14 +35,16 @@ for (var property in jasmineInterface) {
   eval(property + " = jasmineInterface['" + property + "'];");
 }
 
-var LoggingReporter = function(cb) {
-  this.cb = cb;
+var LoggingReporter = function(onTest, finished) {
+  this.cb = onTest;
+  this.finished = finished;
   this.specDone = function(result) {
     this.cb(result);
   };
   this.jasmineDone = function() {
     var results = jasmineInterface.jsApiReporter.specs();
-    this.cb(results);
+
+    this.finished(results);
   }
 }
 
@@ -55,8 +57,8 @@ spiderSpecs = function(speclist, suite) {
 };
 
 // Begin Jasmine Run, return list of all tests.
-runTests = function(done) {
-  var loggingReporter = new LoggingReporter(done);
+runTests = function(onTest, finished) {
+  var loggingReporter = new LoggingReporter(onTest, finished);
   env.addReporter(loggingReporter);
 
 

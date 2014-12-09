@@ -7,49 +7,69 @@ const { atob, btoa } = Cu.import("resource://gre/modules/Services.jsm", {});
 const self = require("sdk/self");
 var Request = require("sdk/request").Request;
 
-var files = [];
+var underTest = null;
 var tests = [];
-var results = {};
+var pendingReports = 0;
 var onFinish = null;
+var stayOpen = false;
 
-var done = function(res) {
+var testDone = function(res) {
+  pendingReports += 1;
+  console.info('- ' + res.fullName);
   var req = Request({
     url: 'http://localhost:9989/put',
-    content: btoa(JSON.stringify(res))
+    content: btoa(JSON.stringify(res)),
+    overrideMimeType: "text/plain; charset=latin1",
+    onComplete: function (response) {
+      pendingReports -= 1;
+      if (onFinish && pendingReports === 0) {
+        onFinish();
+      }
+    }
   });
   req.post();
-  if (res.fullName) {
-    if (typeof results[res.fullName] === 'function') {
-      results[res.fullName](res.status);
-    }
-    results[res.fullName] = res.status;
+};
+
+var completeTesting = function() {
+  if (!stayOpen) {
+    Cu.unload(underTest);
+
+    var system = require("sdk/system");
+    system.exit(0);
+  }
+};
+
+var fileDone = function(res) {
+  console.log('Testing Finished');
+  if (pendingReports > 0) {
+    onFinish = completeTesting();
+  } else {
+    completeTesting();
   }
 };
 
 var finishLoad = function() {
-  files.forEach(function(file) {
-    var symbols = file.EXPORTED_SYMBOLS;
-    symbols.forEach(function(symbol) {
-      var retVal = file[symbol](done);
+  var jsm;
+  try {
+    jsm = Cu.import(underTest);
+  } catch (e) {
+    console.error('Exception importing ' + underTest);
+    console.error(e);
+  }
+  var symbols = jsm.EXPORTED_SYMBOLS;
+  symbols.forEach(function(symbol) {
+    console.log('Executing ' + underTest + ': ' + symbol);
+    try {
+      var retVal = jsm[symbol](testDone, fileDone);
       tests = tests.concat(retVal);
-    });
+    } catch (e) {
+      console.error(e);
+    }
   });
-}
 
-exports.waitFor = function(test, cb) {
-  if (results[test]) {
-    cb(results[test]);
-  } else {
-    results[test] = cb;
-  }
-};
-
-exports.initJasmine = function() {
-  if (tests.length) {
-    return tests;
-  } else {
-    console.error('Specs not loaded sucessfully. Failing');
-    results['Startup'] = 'Failed';
-    return ['Startup'];
-  }
+  /*
+  tests = ['simple test'];
+  setTimeout(testDone.bind({}, {fullName: 'simple test', status: 'passed'}), 100);
+  setTimeout(fileDone.bind({}, {fullName: 'simple test', status: 'passed'}), 500);
+  */
 };

@@ -45,7 +45,7 @@ describe("integration: core.tcpsocket",
     require('../providers/core.tcpsocket'), setup));
 
 /**
-// Restore when udpsocket integration test has been fixed
+// TODO: Restore when udpsocket integration test has been fixed
 describe("integration: core.udpsocket",
     require('freedom/spec/providers/coreIntegration/udpsocket.integration.src').bind(this,
     require('../providers/core.udpsocket'), setup));
