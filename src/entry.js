@@ -1,17 +1,4 @@
-var providers = [
-  require('freedom/providers/core/core.unprivileged'),
-  require('freedom/providers/core/echo.unprivileged'),
-  require('freedom/providers/core/console.unprivileged'),
-  require('freedom/providers/core/peerconnection.unprivileged'),
-  require('freedom/providers/core/core.rtcpeerconnection'),
-  require('freedom/providers/core/core.rtcdatachannel'),
-  require('../providers/core.tcpsocket'),
-  require('../providers/core.udpsocket'),
-  require('../providers/core.storage'),
-  require('freedom/providers/core/core.view'),
-  require('freedom/providers/core/core.oauth'),
-  require('freedom/providers/core/websocket.unprivileged')
-];
+var providers;
 
 // When included as a jsm file.
 if (typeof Components !== 'undefined') {
@@ -30,7 +17,22 @@ if (typeof Components !== 'undefined') {
   WebSocket = hiddenWindow.WebSocket;
   Components.utils.importGlobalProperties(['URL']);
 
-freedom = function (manifest, options) {
+  providers = [
+    require('freedom/providers/core/core.unprivileged'),
+    require('freedom/providers/core/echo.unprivileged'),
+    require('freedom/providers/core/console.unprivileged'),
+    require('freedom/providers/core/peerconnection.unprivileged'),
+    require('freedom/providers/core/core.rtcpeerconnection'),
+    require('freedom/providers/core/core.rtcdatachannel'),
+    require('../providers/core.tcpsocket'),
+    require('../providers/core.udpsocket'),
+    require('../providers/core.storage'),
+    require('freedom/providers/core/core.view'),
+    require('freedom/providers/core/core.oauth'),
+    require('freedom/providers/core/websocket.unprivileged')
+  ];
+
+  freedom = function (manifest, options) {
     var port = require('freedom/src/link/worker'),
         alternatePort = require('./backgroundframe-link'),
         source = Components.stack.filename;
@@ -51,6 +53,9 @@ freedom = function (manifest, options) {
   };
   EXPORTED_SYMBOLS = ["freedom"];
 } else {
+  providers = [
+    require('freedom/providers/core/core.unprivileged')
+  ];
   // When loaded in a worker.
   require('freedom/src/entry')({
     isModule: true,
