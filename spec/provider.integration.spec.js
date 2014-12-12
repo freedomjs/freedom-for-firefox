@@ -51,9 +51,15 @@ describe("integration: core.udpsocket",
     require('../providers/core.udpsocket'), setup));
 **/
 
-describe("integration: core.oauth - tabs",
+describe("integration: core.oauth - progresslistener",
     require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,
     require("freedom/providers/core/core.oauth"),
-    [ require("../providers/oauth/oauth.tabs") ],
+    [ require("../providers/oauth/oauth.progresslistener") ],
+    [ "https://localhost:9876/" ],
+    setup));
+describe("integration: core.oauth - httpobserver",
+    require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,
+    require("freedom/providers/core/core.oauth"),
+    [ require("../providers/oauth/oauth.httpobserver") ],
     [ "https://localhost:9876/" ],
     setup));
