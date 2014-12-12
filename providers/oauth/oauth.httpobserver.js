@@ -43,42 +43,43 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continua
     tab,
     previousTab = gBrowser.selectedTab;
 
-  listener = {
-    QueryInterface: XPCOMUtils.generateQI(["nsIWebProgressListener", "nsISupportsWeakReference"]),
-
-    onLocationChange: function (progress, request, loc, flags) {
-      if (loc.spec === this.oldURL) {
-        return;
+  var httpRequestObserver = {
+    observe: function(subject, topic, data) {
+      if (topic == "http-on-modify-request") {
+        var httpChannel = subject.QueryInterface(Components.interfaces.nsIHttpChannel);
+        var url = subject.URI.spec;
+        if (url.startsWith(stateObj.redirect)) {
+          subject.cancel(Components.results.NS_BINDING_ABORTED);
+          complete(url);
+        }
       }
-      this.oldURL = loc.spec;
-      if (loc.spec.startsWith(stateObj.redirect)) {
-        complete(loc.spec);
-      }
     },
-    onProgressChange: function (progress, request, selfProgress, maxProgress, currProgress, totalProgress) {
+    get observerService() {
+      return Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
     },
-    onSecurityChange: function (progress, request, state) {
+    register: function() {
+      this.observerService.addObserver(this, "http-on-modify-request", false);
     },
-    onStateChange: function (progress, request, flags, status) {
-    },
-    onStatuschange: function (progress, request, status, msg) {
+    unregister: function() {
+      this.observerService.removeObserver(this, "http-on-modify-request");
     }
   };
 
   complete = function (location) {
-    gBrowser.removeProgressListener(listener);
+    httpRequestObserver.unregister();
     gBrowser.selectedTab = previousTab;
+    // Need to wait until the tab has switched before removing it
     setTimeout(function () {
-      gBrowser.removeCurrentTab(tab);
+      gBrowser.removeTab(tab);
       continuation(location);
     }, 100);
   };
 
-  gBrowser.addProgressListener(listener);
-  tab = gBrowser.addTab(authUrl);
+  httpRequestObserver.register();
 
-  //Timeout before switching makes sure the progress listener is installed.
+  //Timeout before switching makes sure the http observer is installed.
   setTimeout(function () {
+    tab = gBrowser.addTab(authUrl);
     gBrowser.selectedTab = tab;
   }, 100);
 };
