@@ -31,7 +31,7 @@ var tictak;
 function handleClick(state) {
   if (!tictak) {
     freedom(self.data.url('tictak.json'), {
-      portType: 'backgroundFrame',
+      //portType: 'backgroundFrame',
       source: self.data.url('freedom-frame.js')
     }).then(function (constructor) {
       tictak = constructor(0);
