@@ -72,12 +72,19 @@ Socket_firefox.prototype.write = function(buffer, continuation) {
 };
 
 Socket_firefox.prototype.listen = function(host, port, continuation) {
-  this.serverSocket = new ServerSocket(host, port);
-  this.host = host;
-  this.port = port;
-  this.serverSocket.onConnect = this._onConnect.bind(this);
-  this.serverSocket.listen();
-  continuation();
+  try {
+    this.serverSocket = new ServerSocket(host, port);
+    this.host = host;
+    this.port = port;
+    this.serverSocket.onConnect = this._onConnect.bind(this);
+    this.serverSocket.listen();
+    continuation();
+  } catch (e) {
+    continuation(undefined, {
+      "errcode": "UNKNOWN",
+      "message": e.message
+    });
+  }
 };
 
 Socket_firefox.prototype._onData = function(buffer) {
