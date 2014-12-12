@@ -45,7 +45,7 @@ freedom = function (manifest, options) {
       providers: providers,
       isModule: false,
       oauth: [
-        //require('../providers/oauth/oauth.httpobserver'),
+        require('../providers/oauth/oauth.httpobserver'),
         require('../providers/oauth/oauth.progresslistener')
       ]
     }, manifest, options);

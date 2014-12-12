@@ -45,11 +45,13 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continua
 
   var httpRequestObserver = {
     observe: function(subject, topic, data) {
-      if (topic == "http-on-modify-request" &&
-          subject.URI.spec.startsWith(stateObj.redirect)) {
-        var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
-        subject.cancel(Components.results.NS_BINDING_ABORTED);
-        complete(subject.URI.spec);
+      if (topic == "http-on-modify-request") {
+        var httpChannel = subject.QueryInterface(Components.interfaces.nsIHttpChannel);
+        var url = subject.URI.spec;
+        if (url.startsWith(stateObj.redirect)) {
+          subject.cancel(Components.results.NS_BINDING_ABORTED);
+          complete(url);
+        }
       }
     },
     get observerService() {
