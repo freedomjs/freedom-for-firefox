@@ -12,12 +12,25 @@ describe("unit: core.tcpsocket", function() {
     clientSocket = new ClientSocket();
   });
 
+  afterEach(function() {
+    serverSocket.disconnect();
+  });
+
   it("connects", function(done) {
     serverSocket.onConnect = function(sock) {
       serverSocket.disconnect();
       done();
     };
     clientSocket.connect("localhost", portNumber, false);
+  });
+
+  it("rejects listens on open ports", function() {
+    try {
+      var ss2 = new ServerSocket("localhost", portNumber);
+      ss2.listen();
+    } catch (e) {
+      expect(e.message).toContain("ERROR_SOCKET_ADDRESS_IN_USE");
+    }
   });
 
   it("receives data", function(done) {
