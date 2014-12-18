@@ -18,12 +18,16 @@ Socket_firefox.socketNumber = 1;
 Socket_firefox.prototype.getInfo = function(continuation) {
   if(this.clientSocket) {
     continuation(this.clientSocket.getInfo());
+  } else if (this.serverSocket) {
+    continuation(this.serverSocket.getInfo());
   }
 };
 
 Socket_firefox.prototype.close = function(continuation) {
   if(this.clientSocket) {
     this.clientSocket.close();
+  } else if (this.serverSocket) {
+    this.serverSocket.disconnect();
   }
   continuation();
 };
