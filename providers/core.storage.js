@@ -1,5 +1,5 @@
 /*globals console, Components, FileUtils, Services*/
-/*jslint indent:2,white:true,sloppy:true */
+/*jslint node:true */
 var dbConn = null;
 if (typeof Components !== 'undefined') {
   /* Per: https://developer.mozilla.org/en-US/docs/Storage */
@@ -8,7 +8,7 @@ if (typeof Components !== 'undefined') {
 
   var file = FileUtils.getFile("ProfD", ["freedom.sqlite"]);
   dbConn = Services.storage.openDatabase(file);
-  dbConn.executeSimpleSQL("CREATE TABLE IF NOT EXISTS store (key text primay key, value blob)");
+  dbConn.executeSimpleSQL("CREATE TABLE IF NOT EXISTS store (key text primary key, value blob)");
 } else {
   console.warn('Storage running in unsuported context.');
 }
@@ -17,7 +17,8 @@ if (typeof Components !== 'undefined') {
  * A storage provider using firefox's sqlite storage.
  * @constructor
  */
-var Storage_ffox = function(cap, dispatch) {
+var Storage_ffox = function (cap, dispatch) {
+  'use strict';
   this.dispatchEvents = dispatch;
 };
 
@@ -26,26 +27,30 @@ var Storage_ffox = function(cap, dispatch) {
  * @method keys
  * @param {Function} continuation Function to call with array of keys.
  */
-Storage_ffox.prototype.keys = function(continuation) {
+Storage_ffox.prototype.keys = function (continuation) {
+  'use strict';
   var statement = dbConn.createStatement("SELECT key FROM store"),
-      ret = false,
-      keys = [];
+    ret = false,
+    keys = [];
   statement.executeAsync({
-    handleResult: function(r) {
-      var row;
-      for (row = r.getNextRow(); row; row = r.getNextRow()) {
+    handleResult: function (r) {
+      var row = r.getNextRow();
+      while (row) {
         keys.push(row.getResultByName("key"));
+        row = r.getNextRow();
       }
     },
-    handleError: function(err) {
+    handleError: function (err) {
       ret = true;
       continuation(undefined, {
         "errcode": "UNKNOWN",
         "message": err.message
       });
     },
-    handleCompletion: function(reason) {
-      if (ret) {return;}
+    handleCompletion: function (reason) {
+      if (ret) {
+        return;
+      }
       if (reason !== Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) {
         continuation(undefined, {
           "errcode": "UNKNOWN",
@@ -65,17 +70,18 @@ Storage_ffox.prototype.keys = function(continuation) {
  * @param {Function} continuation The function to call with the data of the key,
  *   or null if the key does not exist.
  */
-Storage_ffox.prototype.get = function(key, continuation) {
+Storage_ffox.prototype.get = function (key, continuation) {
+  'use strict';
   var statement = dbConn.createStatement("SELECT value FROM store where key=:k"),
-      ret = false,
-      params = statement.newBindingParamsArray(),
-      param = params.newBindingParams();
+    ret = false,
+    params = statement.newBindingParamsArray(),
+    param = params.newBindingParams();
   param.bindByName("k", key);
   params.addParams(param);
   statement.bindParameters(params);
 
   statement.executeAsync({
-    handleResult: function(r) {
+    handleResult: function (r) {
       var row;
       for (row = r.getNextRow(); row; row = r.getNextRow()) {
         if (!ret) {
@@ -84,7 +90,7 @@ Storage_ffox.prototype.get = function(key, continuation) {
         }
       }
     },
-    handleError: function(err) {
+    handleError: function (err) {
       if (!ret) {
         ret = true;
         continuation(undefined, {
@@ -93,10 +99,10 @@ Storage_ffox.prototype.get = function(key, continuation) {
         });
       }
     },
-    handleCompletion: function(reason) {
+    handleCompletion: function (reason) {
       if (!ret) {
         if (reason === Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) {
-            continuation(null);
+          continuation(null);
         } else {
           continuation(undefined, {
             "errcode": "UNKNOWN",
@@ -114,8 +120,9 @@ Storage_ffox.prototype.get = function(key, continuation) {
  * @param {String} value The data to set for the key.
  * @param {Function} continuation Function to call when the data is stored.
  */
-Storage_ffox.prototype.set = function(key, value, continuation) {
-  this.get(key, function(val, err) {
+Storage_ffox.prototype.set = function (key, value, continuation) {
+  'use strict';
+  this.get(key, function (val, err) {
     if (err) {
       return continuation(undefined, err);
     }
@@ -159,16 +166,17 @@ Storage_ffox.prototype.set = function(key, value, continuation) {
  * @param {String} key The key to remove
  * @param {Function} continuation Function to call when key is removed.
  */
-Storage_ffox.prototype.remove = function(key, continuation) {
+Storage_ffox.prototype.remove = function (key, continuation) {
+  'use strict';
   // console.log('storage_chrome: removing ' + key);
-  this.get(key, function(val, err) {
+  this.get(key, function (val, err) {
     if (err) {
       return continuation(undefined, err);
     }
 
     var statement = dbConn.createStatement("DELETE FROM store WHERE key=:k"),
-        params = statement.newBindingParamsArray(),
-        param = params.newBindingParams();
+      params = statement.newBindingParamsArray(),
+      param = params.newBindingParams();
     param.bindByName("k", key);
     params.addParams(param);
     statement.bindParameters(params);
@@ -184,7 +192,8 @@ Storage_ffox.prototype.remove = function(key, continuation) {
  * @method clear
  * @param {Function} continuation Function to call when store is reset.
  */
-Storage_ffox.prototype.clear = function(continuation) {
+Storage_ffox.prototype.clear = function (continuation) {
+  'use strict';
   // console.log('storage_chrome: clear all');
   dbConn.executeSimpleSQL("DELETE FROM store");
   continuation();
