@@ -19,9 +19,9 @@ if (typeof Components !== 'undefined') {
 
   providers = [
     require('freedom/providers/core/core.unprivileged'),
-    require('freedom/providers/core/echo.unprivileged'),
-    require('freedom/providers/core/console.unprivileged'),
-    require('freedom/providers/core/peerconnection.unprivileged'),
+    require('freedom/providers/core/core.echo'),
+    require('freedom/providers/core/core.console'),
+    require('freedom/providers/core/core.peerconnection'),
     require('freedom/providers/core/core.rtcpeerconnection'),
     require('freedom/providers/core/core.rtcdatachannel'),
     require('../providers/core.tcpsocket'),
@@ -29,7 +29,7 @@ if (typeof Components !== 'undefined') {
     require('../providers/core.storage'),
     require('freedom/providers/core/core.view'),
     require('freedom/providers/core/core.oauth'),
-    require('freedom/providers/core/websocket.unprivileged')
+    require('freedom/providers/core/core.websocket')
   ];
 
   freedom = function (manifest, options) {
