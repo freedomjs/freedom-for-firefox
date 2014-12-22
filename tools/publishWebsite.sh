@@ -7,21 +7,21 @@ TAG=$(git describe --abbrev=0 --tags)
 #TAG=$(git describe --exact-match --tags HEAD 2>/dev/null)
 
 # Clone
-rm -rf tools/freedomjs
-git clone git@github.com:freedomjs/freedomjs.github.io.git tools/freedomjs
+rm -rf build/freedomjs
+git clone git@github.com:freedomjs/freedomjs.github.io.git build/freedomjs
 
 # Copy latest release
-mkdir -p tools/freedomjs/dist/freedom-for-firefox
-cp freedom-for-firefox.jsm tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.jsm
-#cp freedom-for-firefox.jsm.map tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.jsm.map
+mkdir -p build/freedomjs/dist/freedom-for-firefox
+cp freedom-for-firefox.jsm build/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.jsm
+#cp freedom-for-firefox.jsm.map build/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.$TAG.jsm.map
 
 # Link to the latest
-rm -f tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.js*
-ln -s freedom-for-firefox.$TAG.jsm tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.jsm
-#ln -s freedom-for-firefox.$TAG.js.map tools/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.js.map
+rm -f build/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.js*
+ln -s freedom-for-firefox.$TAG.jsm build/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.jsm
+#ln -s freedom-for-firefox.$TAG.js.map build/freedomjs/dist/freedom-for-firefox/freedom-for-firefox.latest.js.map
 
 # Commit
-cd tools/freedomjs
+cd build/freedomjs
 git add -A .
 git commit -m $FREEDOMCR/$COMMIT
 git push origin master

@@ -47,7 +47,7 @@ module.exports = function (grunt) {
       },
       frame: {
         files: {
-          'tools/frame.js': require.resolve('freedom/src/util/frameEntry.js')
+          'build/frame.js': require.resolve('freedom/src/util/frameEntry.js')
         }
       },
       options: {
@@ -85,7 +85,7 @@ module.exports = function (grunt) {
       }
     },
     clean: ['freedom-for-firefox.jsm', 'freedom.map', 'node_modules/', 'spec.jsm',
-            '.build/', 'tmp/', 'tools/freedomjs/'],
+            '.build/', 'tmp/', 'build/'],
     'npm-publish': {
       options: {
         // list of tasks that are required before publishing
@@ -116,7 +116,7 @@ module.exports = function (grunt) {
     },
     copy: {
       demo: {
-        src: 'tools/frame.js',
+        src: 'build/frame.js',
         dest: 'demo/tictak/data/freedom-frame.js'
       }
     }
