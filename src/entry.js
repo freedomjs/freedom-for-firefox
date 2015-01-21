@@ -15,6 +15,8 @@ if (typeof Components !== 'undefined') {
   // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
   Blob = hiddenWindow.Blob;
   WebSocket = hiddenWindow.WebSocket;
+  FileReader = hiddenWindow.FileReader;
+
   Components.utils.importGlobalProperties(['URL']);
 
   providers = [
