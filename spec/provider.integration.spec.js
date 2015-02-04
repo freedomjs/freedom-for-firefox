@@ -13,6 +13,10 @@ var setup = function () {
   testUtil.setModuleStrategy(require('freedom/src/link/worker'), './freedom-for-firefox.jsm');
 };
 
+var jsmContext = Function("return this;")();
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+XPCOMUtils.importRelative(jsmContext, "freedom-for-firefox.jsm");
+
 // Social
 describe("integration-single: social.loopback.json", require("freedom/spec/providers/social/social.single.integration.src")
   .bind(this, freedom, base+"/providers/social/loopback/social.loopback.json"), {});

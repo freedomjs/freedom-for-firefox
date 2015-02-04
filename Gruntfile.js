@@ -42,7 +42,7 @@ module.exports = function (grunt) {
       },
       jasmine: {
         files: {
-          'build/spec-raw.jsm': ['src/spec.js']
+          'spec.jsm': ['src/spec.js']
         }
       },
       frame: {
@@ -56,12 +56,6 @@ module.exports = function (grunt) {
           './src/promise.js:es6-promise'
         ]
       }
-    },
-    concat: {
-      spec: {
-        src: [ 'spec/helper/importFreedom.jsm', 'build/spec-raw.jsm' ],
-        dest: 'spec.jsm',
-      },
     },
     "build-test-addon": {
       freedom: {
@@ -131,7 +125,6 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-prompt');
@@ -149,7 +142,6 @@ module.exports = function (grunt) {
   grunt.registerTask('test', [
     'build',
     'browserify:jasmine',
-    'concat:spec',
     'integration'
   ]);
 
