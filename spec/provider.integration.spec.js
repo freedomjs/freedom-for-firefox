@@ -1,7 +1,7 @@
 var testUtil = require('freedom/spec/util');
+var self = Components.stack.filename;
+var base = self.substr(0, self.lastIndexOf('/'));
 var setup = function () {
-  var self = Components.stack.filename;
-  var base = self.substr(0, self.lastIndexOf('/'));
   testUtil.setSpecBase(base);
   testUtil.setCoreProviders([
     require('freedom/providers/core/core.unprivileged'),
@@ -13,23 +13,21 @@ var setup = function () {
   testUtil.setModuleStrategy(require('freedom/src/link/worker'), './freedom-for-firefox.jsm');
 };
 
-describe("integration-single: social.loopback.json",
-    require('freedom/spec/providers/social/social.single.integration.src').bind(this,
-    "providers/social/loopback/social.loopback.json", setup));
-describe("integration-single: social.ws.json",
-    require('freedom/spec/providers/social/social.single.integration.src').bind(this,
-    "providers/social/websocket-server/social.ws.json", setup));
-describe("integration-double: social.ws.json",
-    require('freedom/spec/providers/social/social.double.integration.src').bind(this,
-    "providers/social/websocket-server/social.ws.json", setup));
+// Social
+describe("integration-single: social.loopback.json", require("freedom/spec/providers/social/social.single.integration.src")
+  .bind(this, freedom, base+"/providers/social/loopback/social.loopback.json"), {});
+describe("integration-single: social.ws.json", require("freedom/spec/providers/social/social.single.integration.src")
+  .bind(this, freedom, base+"/providers/social/websocket-server/social.ws.json", {}));
+describe("integration-double: social.ws.json", require("freedom/spec/providers/social/social.double.integration.src")
+  .bind(this, freedom, base+"/providers/social/websocket-server/social.ws.json", {}));
 
-var isolated = "providers/storage/isolated/storage.isolated.json";
-describe("integration: storage.isolated.json",
-    require('freedom/spec/providers/storage/storage.integration.src').bind(this, isolated, setup));
-var shared = "providers/storage/shared/storage.shared.json";
-describe("integration: storage.shared.json",
-    require('freedom/spec/providers/storage/storage.integration.src').bind(this, shared, setup, false));
+// Storage
+describe("integration: storage.isolated.json", require("freedom/spec/providers/storage/storage.integration.src")
+  .bind(this, freedom, base+"/providers/storage/isolated/storage.isolated.json", {}, false));
+describe("integration: storage.shared.json", require("freedom/spec/providers/storage/storage.integration.src")
+  .bind(this, freedom, base+"/providers/storage/shared/storage.shared.json", {}, false));
 
+// Transport
 describe("integration: transport.webrtc.json",
     require('freedom/spec/providers/transport/transport.integration.src').bind(this,
     "providers/transport/webrtc/transport.webrtc.json", setup));

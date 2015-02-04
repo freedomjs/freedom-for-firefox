@@ -1,5 +1,5 @@
 node_modules/
-spec.jsm
-.build
+.build/
 build/
 tmp/
+spec.jsm
