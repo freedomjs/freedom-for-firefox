@@ -5,9 +5,9 @@ var setup = function () {
   testUtil.setSpecBase(base);
   testUtil.setCoreProviders([
     require('freedom/providers/core/core.unprivileged'),
-    require('freedom/providers/core/console.unprivileged'),
-    require('freedom/providers/core/peerconnection.unprivileged'),
-    require('freedom/providers/core/websocket.unprivileged'),
+    require('freedom/providers/core/core.console'),
+    require('freedom/providers/core/core.peerconnection'),
+    require('freedom/providers/core/core.websocket'),
     require('../providers/core.storage')
   ]);
   testUtil.setModuleStrategy(require('freedom/src/link/worker'), './freedom-for-firefox.jsm');
@@ -40,16 +40,17 @@ describe("integration: core.rtcpeerconnection",
     require("freedom/providers/core/core.rtcdatachannel"),
     setup));
 
+describe("integration: core.xhr", 
+    require("freedom/spec/providers/coreIntegration/xhr.integration.src").bind(this, 
+    require("freedom/providers/core/core.xhr"), setup));
+
 describe("integration: core.tcpsocket",
     require('freedom/spec/providers/coreIntegration/tcpsocket.integration.src').bind(this,
     require('../providers/core.tcpsocket'), setup));
 
-/**
-// TODO: Restore when udpsocket integration test has been fixed
 describe("integration: core.udpsocket",
     require('freedom/spec/providers/coreIntegration/udpsocket.integration.src').bind(this,
     require('../providers/core.udpsocket'), setup));
-**/
 
 describe("integration: core.oauth - progresslistener",
     require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,

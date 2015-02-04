@@ -1,8 +1,7 @@
 freedom-for-firefox.jsm
 freedom.map
-node_modules
+node_modules/
 spec.jsm
 .build
+build/
 tmp/
-tools/freedomjs
-tools/frame.js

@@ -11,6 +11,7 @@ mozRTCIceCandidate = hiddenWindow.mozRTCIceCandidate;
 
 Blob = hiddenWindow.Blob;
 WebSocket = hiddenWindow.WebSocket;
+FileReader = hiddenWindow.FileReader;
 
 var jasmineRequire = require('jasmine-core/lib/jasmine-core/jasmine');
 jasmine = jasmineRequire.core(jasmineRequire);

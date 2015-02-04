@@ -15,13 +15,15 @@ if (typeof Components !== 'undefined') {
   // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1007318
   Blob = hiddenWindow.Blob;
   WebSocket = hiddenWindow.WebSocket;
+  FileReader = hiddenWindow.FileReader;
+
   Components.utils.importGlobalProperties(['URL']);
 
   providers = [
     require('freedom/providers/core/core.unprivileged'),
-    require('freedom/providers/core/echo.unprivileged'),
-    require('freedom/providers/core/console.unprivileged'),
-    require('freedom/providers/core/peerconnection.unprivileged'),
+    require('freedom/providers/core/core.echo'),
+    require('freedom/providers/core/core.console'),
+    require('freedom/providers/core/core.peerconnection'),
     require('freedom/providers/core/core.rtcpeerconnection'),
     require('freedom/providers/core/core.rtcdatachannel'),
     require('../providers/core.tcpsocket'),
@@ -29,7 +31,8 @@ if (typeof Components !== 'undefined') {
     require('../providers/core.storage'),
     require('freedom/providers/core/core.view'),
     require('freedom/providers/core/core.oauth'),
-    require('freedom/providers/core/websocket.unprivileged')
+    require('freedom/providers/core/core.websocket'),
+    require('freedom/providers/core/core.xhr')
   ];
 
   freedom = function (manifest, options) {
