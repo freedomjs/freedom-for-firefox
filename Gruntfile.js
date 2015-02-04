@@ -60,7 +60,7 @@ module.exports = function (grunt) {
     "build-test-addon": {
       freedom: {
         files: {
-          '.build': ['spec.jsm']
+          '.build': [ 'spec.jsm' ]
         },
         options: {
           helper: [
