@@ -15,7 +15,7 @@ var stayOpen = false;
 
 var testDone = function(res) {
   pendingReports += 1;
-  console.info('- ' + res.fullName);
+  console.info('[' + res.status + ']: ' + res.fullName);
   var req = Request({
     url: 'http://localhost:9989/put',
     content: btoa(JSON.stringify(res)),
