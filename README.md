@@ -1,5 +1,7 @@
 freedom-for-firefox
 ===================
+[![Build Status](https://api.shippable.com/projects/54c823bf5ab6cc135289fbdb/badge?branchName=master)](https://app.shippable.com/projects/54c823bf5ab6cc135289fbdb/builds/latest)
+
 A freedom.js distribution for inclusion in Firefox extensions.
 
 # Installation
