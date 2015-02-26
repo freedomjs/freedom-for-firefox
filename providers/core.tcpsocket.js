@@ -75,6 +75,16 @@ Socket_firefox.prototype.write = function(buffer, continuation) {
   }
 };
 
+Socket_firefox.prototype.pause = function(continuation) {
+  this.clientSocket.pause();
+  continuation();
+};
+
+Socket_firefox.prototype.resume = function(continuation) {
+  this.clientSocket.resume();
+  continuation();
+};
+
 Socket_firefox.prototype.listen = function(host, port, continuation) {
   try {
     this.serverSocket = new ServerSocket(host, port);
