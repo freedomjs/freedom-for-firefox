@@ -67,8 +67,7 @@ module.exports = function (grunt) {
             {path: 'freedom-for-firefox.jsm', include: false},
             {path: freedomPrefix + '/providers', name: 'providers', include: false},
             {path: freedomPrefix + '/spec', name: 'spec', include: false}
-          ],
-          keepBrowser: true
+          ]
         }
       }
     },
