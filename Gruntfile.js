@@ -67,7 +67,8 @@ module.exports = function (grunt) {
             {path: 'freedom-for-firefox.jsm', include: false},
             {path: freedomPrefix + '/providers', name: 'providers', include: false},
             {path: freedomPrefix + '/spec', name: 'spec', include: false}
-          ]
+          ],
+          keepBrowser: true
         }
       }
     },
@@ -131,7 +132,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-npm');
   grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('freedom');
 
   grunt.loadTasks('tasks');
 
