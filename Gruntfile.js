@@ -131,7 +131,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-npm');
   grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('freedom');
 
   grunt.loadTasks('tasks');
 

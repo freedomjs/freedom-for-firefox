@@ -1,7 +1,8 @@
 try {
-  const socketTransportService = Components.classes["@mozilla.org/network/socket-transport-service;1"]
+  var socketTransportService = Components.classes["@mozilla.org/network/socket-transport-service;1"]
         .getService(Components.interfaces.nsISocketTransportService);
-  const mainThread = Components.classes["@mozilla.org/thread-manager;1"].getService().mainThread;
+  var mainThread = Components.classes["@mozilla.org/thread-manager;1"]
+        .getService(Components.interfaces.nsIThreadManager).mainThread;
 } catch (e) {
   // Components is not defined in web workers,
   // but we don't need this ClientSocket in a worker.
@@ -50,8 +51,6 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
   var buffer = ArrayBuffer(lineData.length);
   var typedBuffer = new Uint8Array(buffer);
   typedBuffer.set(lineData);
-  var socketTransportService = Components.classes["@mozilla.org/network/socket-transport-service;1"]
-        .getService(Components.interfaces.nsISocketTransportService);
   if (typeof this.socket.onData === 'function') {
     this.socket.onData(typedBuffer);
   } else {
