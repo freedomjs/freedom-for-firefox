@@ -22,6 +22,10 @@ function nsIInputStreamCallback(clientSocket) {
 }
 
 nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
+  if (this.socket.paused) {
+    return;
+  }
+
   var bytesAvailable;
   var binaryReader = this.socket.binaryReader;
   try {
@@ -68,6 +72,7 @@ function ClientSocket(incomingTransport) {
     this._setupTransport(incomingTransport);
   }
   this._waitingData = [];
+  this.paused = false;
 }
 
 ClientSocket.prototype._setupTransport = function(transport) {
@@ -78,7 +83,7 @@ ClientSocket.prototype._setupTransport = function(transport) {
   this.rawInputStream = this.transport.openInputStream(0,0,0);
   this.binaryReader.setInputStream(this.rawInputStream);
 
-  new nsIInputStreamCallback(this);
+  this.inputStreamCallback = new nsIInputStreamCallback(this);
 
   // set up writers
   this.outputStream = transport.openOutputStream(0, 0, 0);
@@ -120,6 +125,15 @@ ClientSocket.prototype.onTransportStatus = function (transport, status) {
 ClientSocket.prototype.write = function(data) {
   var stringData = this.arrayBufferToString(data);
   this.outputStream.write(stringData, stringData.length);
+};
+
+ClientSocket.prototype.pause = function() {
+  this.paused = true;
+};
+
+ClientSocket.prototype.resume = function() {
+  this.paused = false;
+  this.rawInputStream.asyncWait(this.inputStreamCallback, 0, 0, mainThread);
 };
 
 ClientSocket.prototype.close = function() {
