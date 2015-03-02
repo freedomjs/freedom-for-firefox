@@ -76,11 +76,27 @@ Socket_firefox.prototype.write = function(buffer, continuation) {
 };
 
 Socket_firefox.prototype.pause = function(continuation) {
+  if (!this.clientSocket) {
+    continuation(undefined, {
+      "errcode": "SOCKET_NOT_CONNECTED",
+      "message": "Can only pause a connected client socket"
+    });
+    return;
+  }
+
   this.clientSocket.pause();
   continuation();
 };
 
 Socket_firefox.prototype.resume = function(continuation) {
+  if (!this.clientSocket) {
+    continuation(undefined, {
+      "errcode": "SOCKET_NOT_CONNECTED",
+      "message": "Can only resume a connected client socket"
+    });
+    return;
+  }
+
   this.clientSocket.resume();
   continuation();
 };
