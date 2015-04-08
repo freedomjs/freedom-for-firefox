@@ -102,7 +102,7 @@ Socket_firefox.prototype.resume = function(continuation) {
 };
 
 Socket_firefox.prototype.listen = function(host, port, continuation) {
-  if (typeof this.serverSocket === 'undefined') {
+  if (typeof this.serverSocket !== 'undefined') {
     continuation(undefined, {
       "errcode": "ALREADY_CONNECTED",
       "message": "Cannot Listen on existing socket."
