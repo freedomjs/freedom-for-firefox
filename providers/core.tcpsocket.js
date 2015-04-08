@@ -49,7 +49,7 @@ Socket_firefox.prototype.prepareSecure = function(continuation) {
 Socket_firefox.prototype.secure = function(continuation) {
   if (!this.hostname || !this.port || !this.clientSocket) {
     continuation(undefined, {
-      "errcode": "SOCKET_NOT_CONNECTED",
+      "errcode": "NOT_CONNECTED",
       "message": "Cannot Secure Not Connected Socket"
     });
     return;
@@ -78,7 +78,7 @@ Socket_firefox.prototype.write = function(buffer, continuation) {
 Socket_firefox.prototype.pause = function(continuation) {
   if (!this.clientSocket) {
     continuation(undefined, {
-      "errcode": "SOCKET_NOT_CONNECTED",
+      "errcode": "NOT_CONNECTED",
       "message": "Can only pause a connected client socket"
     });
     return;
@@ -91,7 +91,7 @@ Socket_firefox.prototype.pause = function(continuation) {
 Socket_firefox.prototype.resume = function(continuation) {
   if (!this.clientSocket) {
     continuation(undefined, {
-      "errcode": "SOCKET_NOT_CONNECTED",
+      "errcode": "NOT_CONNECTED",
       "message": "Can only resume a connected client socket"
     });
     return;
@@ -102,18 +102,25 @@ Socket_firefox.prototype.resume = function(continuation) {
 };
 
 Socket_firefox.prototype.listen = function(host, port, continuation) {
-  try {
-    this.serverSocket = new ServerSocket(host, port);
-    this.host = host;
-    this.port = port;
-    this.serverSocket.onConnect = this._onConnect.bind(this);
-    this.serverSocket.listen();
-    continuation();
-  } catch (e) {
+  if (typeof this.serverSocket === 'undefined') {
     continuation(undefined, {
-      "errcode": "UNKNOWN",
-      "message": e.message
+      "errcode": "ALREADY_CONNECTED",
+      "message": "Cannot Listen on existing socket."
     });
+  } else {
+    try {
+      this.serverSocket = new ServerSocket(host, port);
+      this.host = host;
+      this.port = port;
+      this.serverSocket.onConnect = this._onConnect.bind(this);
+      this.serverSocket.listen();
+      continuation();
+    } catch (e) {
+      continuation(undefined, {
+        "errcode": "UNKNOWN",
+        "message": e.message
+      });
+    }
   }
 };
 
