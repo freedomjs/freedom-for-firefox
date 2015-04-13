@@ -52,7 +52,7 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
   }
 
   var lineData = binaryReader.readByteArray(bytesAvailable);
-  var buffer = ArrayBuffer(lineData.length);
+  var buffer = new ArrayBuffer(lineData.length);
   var typedBuffer = new Uint8Array(buffer);
   typedBuffer.set(lineData);
   if (typeof this.socket.onData === 'function') {
@@ -143,7 +143,7 @@ ClientSocket.prototype.close = function() {
     this.transport.close(0);
   }
   // Delete transport so getInfo doesn't think we are connected
-  delete this.transport; 
+  delete this.transport;
   if (typeof this.onDisconnect === 'function') {
     this.onDisconnect();
   }
@@ -164,7 +164,6 @@ ClientSocket.prototype.getInfo = function() {
               localAddress: nsINetAddrLocal.address,
               localPort: nsINetAddrLocal.port};
   return info;
-  
 };
 
 ClientSocket.prototype.setOnDataListener = function(listener) {
