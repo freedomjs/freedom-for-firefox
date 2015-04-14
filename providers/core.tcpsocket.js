@@ -16,7 +16,9 @@ Socket_firefox.incomingConnections = {};
 Socket_firefox.socketNumber = 1;
 
 Socket_firefox.prototype.getInfo = function(continuation) {
-  if(this.clientSocket) {
+  if (!this.hostname || !this.port || !this.clientSocket) {
+    continuation({ "connected": false });
+  } else if(this.clientSocket) {
     continuation(this.clientSocket.getInfo());
   } else if (this.serverSocket) {
     continuation(this.serverSocket.getInfo());
@@ -92,9 +94,7 @@ Socket_firefox.prototype.write = function(buffer, continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Cannot write non-connected socket"
     });
-    return;
-  }
-  if (this.clientSocket) {
+  } else {
     this.clientSocket.write(buffer);
     continuation();
   }
@@ -106,11 +106,10 @@ Socket_firefox.prototype.pause = function(continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Can only pause a connected client socket"
     });
-    return;
+  } else {
+    this.clientSocket.pause();
+    continuation();
   }
-
-  this.clientSocket.pause();
-  continuation();
 };
 
 Socket_firefox.prototype.resume = function(continuation) {
@@ -119,11 +118,10 @@ Socket_firefox.prototype.resume = function(continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Can only resume a connected client socket"
     });
-    return;
+  } else {
+    this.clientSocket.resume();
+    continuation();
   }
-
-  this.clientSocket.resume();
-  continuation();
 };
 
 Socket_firefox.prototype.listen = function(host, port, continuation) {
