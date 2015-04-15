@@ -102,6 +102,7 @@ ClientSocket.prototype.connect = function(hostname, port, startTls, continuation
       message: 'Socket already connected'
     });
   }
+  console.log("IN CLIENTSOCKET CONNECT");
   this.onConnect = continuation;
 
   var socketTypes = startTls ? ['starttls'] : [null];
@@ -113,6 +114,7 @@ ClientSocket.prototype.connect = function(hostname, port, startTls, continuation
                                                          null);
   this._setupTransport(transport);
   this.socketType = 'tcp';
+  console.log("DONE WITH INITIAL CLIENTSOCKET CONNECT");
 };
 
 // Called due to the setEventSync call.
@@ -148,7 +150,7 @@ ClientSocket.prototype.close = function(err) {
   // Delete transport so getInfo doesn't think we are connected
   delete this.transport;
   if (typeof this.onDisconnect === 'function') {
-    this.onDisconnect(err);
+    this.onDisconnect(undefined, err);
   }
 };
 

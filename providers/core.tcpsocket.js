@@ -49,11 +49,12 @@ Socket_firefox.prototype.connect = function(hostname, port, continuation) {
     this.dispatchEvent("onConnection", err);
     continuation(arg, err);
   }.bind(this);
-  this.clientSocket.onDisconnect = function(err) {
+  this.clientSocket.onDisconnect = function(arg, err) {
     console.log("CLIENT FIRING ONDISCONNECT");
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
+  console.log("ABOUT TO CONNECT");
   this.clientSocket.connect(hostname, port, false, onConnection);
   this.hostname = hostname;
   this.port = port;
