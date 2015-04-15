@@ -2,17 +2,17 @@ var ClientSocket = require('./client_socket');
 var ServerSocket = require('./server_socket');
 
 function Socket_firefox(cap, dispatchEvent, socketId) {
-  var incommingConnections = Socket_firefox.incommingConnections;
+  var incomingConnections = Socket_firefox.incomingConnections;
   this.dispatchEvent = dispatchEvent;
   this.socketId = socketId;
-  if (socketId in incommingConnections) {
-    this.clientSocket = incommingConnections[socketId];
-    delete incommingConnections[socketId];
+  if (socketId in incomingConnections) {
+    this.clientSocket = incomingConnections[socketId];
+    delete incomingConnections[socketId];
     this.clientSocket.setOnDataListener(this._onData.bind(this));
   }
 }
 
-Socket_firefox.incommingConnections = {};
+Socket_firefox.incomingConnections = {};
 Socket_firefox.socketNumber = 1;
 
 Socket_firefox.prototype.getInfo = function(continuation) {
@@ -20,11 +20,20 @@ Socket_firefox.prototype.getInfo = function(continuation) {
     continuation(this.clientSocket.getInfo());
   } else if (this.serverSocket) {
     continuation(this.serverSocket.getInfo());
+  } else {
+    continuation({ "connected": false });
   }
 };
 
 Socket_firefox.prototype.close = function(continuation) {
-  if(this.clientSocket) {
+  if (!this.clientSocket && !this.serverSocket) {
+    continuation(undefined, {
+      "errcode": "SOCKET_CLOSED",
+      "message": "Cannot close non-connected socket"
+    });
+    return;
+  }
+  if (this.clientSocket) {
     this.clientSocket.close();
   } else if (this.serverSocket) {
     this.serverSocket.disconnect();
@@ -35,8 +44,18 @@ Socket_firefox.prototype.close = function(continuation) {
 // TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
+  var onConnection = function(arg, err) {
+    console.log("CLIENT FIRING ONCONNECTION");
+    this.dispatchEvent("onConnection", err);
+    continuation(arg, err);
+  }.bind(this);
+  this.clientSocket.onDisconnect = function(arg, err) {
+    console.log("CLIENT FIRING ONDISCONNECT");
+    this.dispatchEvent("onDisconnect", err);
+  }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(hostname, port, false, continuation);
+  console.log("ABOUT TO CONNECT");
+  this.clientSocket.connect(hostname, port, false, onConnection);
   this.hostname = hostname;
   this.port = port;
 };
@@ -50,26 +69,40 @@ Socket_firefox.prototype.secure = function(continuation) {
   if (!this.hostname || !this.port || !this.clientSocket) {
     continuation(undefined, {
       "errcode": "NOT_CONNECTED",
-      "message": "Cannot Secure Not Connected Socket"
+      "message": "Cannot secure non-connected socket"
     });
-    return;
+  } else {
+    // Create a new ClientSocket (nsISocketTransport) object for the existing
+    // hostname and port, using type 'starttls'.  This will upgrade the existing
+    // connection to TLS, rather than create a new connection.
+    // TODO: check to make sure this doesn't result in weird race conditions if
+    // we have 2 pieces of code both trying to connect to the same hostname/port
+    // and do a starttls flow (e.g. if there are 2 instances of a GTalk social
+    // provider that are both trying to connect to GTalk simultaneously with
+    // different logins).
+    this.clientSocket = new ClientSocket();
+    // TODO: DRY this code (similar to 'connect' above)
+    this.clientSocket.onDisconnect = function(err) {
+      this.dispatchEvent("onDisconnect", err);
+    }.bind(this);
+    this.clientSocket.setOnDataListener(this._onData.bind(this));
+    this.clientSocket.connect(this.hostname, this.port, true);
+    console.log("CLIENT FIRING ONCONNECTION");
+    this.dispatchEvent("onConnection", {
+      "errcode": "SUCCESS",
+      "message": "Upgraded to TLS connection"
+    });
+    continuation();
   }
-  // Create a new ClientSocket (nsISocketTransport) object for the existing
-  // hostname and port, using type 'starttls'.  This will upgrade the existing
-  // connection to TLS, rather than create a new connection.
-  // TODO: check to make sure this doesn't result in weird race conditions if
-  // we have 2 pieces of code both trying to connect to the same hostname/port
-  // and do a starttls flow (e.g. if there are 2 instances of a GTalk social
-  // provider that are both trying to connect to GTalk simultaneously with
-  // different logins).
-  this.clientSocket = new ClientSocket();
-  this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(this.hostname, this.port, true);
-  continuation();
 };
 
 Socket_firefox.prototype.write = function(buffer, continuation) {
-  if (this.clientSocket) {
+  if (!this.clientSocket) {
+    continuation(undefined, {
+      "errcode": "NOT_CONNECTED",
+      "message": "Cannot write non-connected socket"
+    });
+  } else {
     this.clientSocket.write(buffer);
     continuation();
   }
@@ -81,11 +114,10 @@ Socket_firefox.prototype.pause = function(continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Can only pause a connected client socket"
     });
-    return;
+  } else {
+    this.clientSocket.pause();
+    continuation();
   }
-
-  this.clientSocket.pause();
-  continuation();
 };
 
 Socket_firefox.prototype.resume = function(continuation) {
@@ -94,18 +126,17 @@ Socket_firefox.prototype.resume = function(continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Can only resume a connected client socket"
     });
-    return;
+  } else {
+    this.clientSocket.resume();
+    continuation();
   }
-
-  this.clientSocket.resume();
-  continuation();
 };
 
 Socket_firefox.prototype.listen = function(host, port, continuation) {
-  if (typeof this.serverSocket !== 'undefined') {
+  if (!this.serverSocket) {
     continuation(undefined, {
       "errcode": "ALREADY_CONNECTED",
-      "message": "Cannot Listen on existing socket."
+      "message": "Cannot listen on existing socket."
     });
   } else {
     try {
@@ -131,12 +162,13 @@ Socket_firefox.prototype._onData = function(buffer) {
 
 Socket_firefox.prototype._onConnect = function(clientSocket) {
   var socketNumber = Socket_firefox.socketNumber++;
-  Socket_firefox.incommingConnections[socketNumber] = clientSocket;
-  this.dispatchEvent("onConnection", { socket: socketNumber,
-                                       host: this.host,
-                                       port: this.port
-                                     });
-  
+  Socket_firefox.incomingConnections[socketNumber] = clientSocket;
+  console.log("SERVER FIRING ONCONNECTION");
+  this.dispatchEvent("onConnection", {
+    socket: socketNumber,
+    host: this.host,
+    port: this.port
+  });
 };
 
 /** REGISTER PROVIDER **/

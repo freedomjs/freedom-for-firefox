@@ -43,7 +43,10 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
     if (e.name !== 'NS_BASE_STREAM_CLOSED') {
       console.warn(e);
     }
-    this.socket.close();
+    this.socket.close({
+      errcode: 'TODO',
+      message: 'TODOMESSAGE'
+    });
     return;
   }
   if (this.socket.onConnect) {
@@ -52,7 +55,7 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
   }
 
   var lineData = binaryReader.readByteArray(bytesAvailable);
-  var buffer = ArrayBuffer(lineData.length);
+  var buffer = new ArrayBuffer(lineData.length);
   var typedBuffer = new Uint8Array(buffer);
   typedBuffer.set(lineData);
   if (typeof this.socket.onData === 'function') {
@@ -99,6 +102,7 @@ ClientSocket.prototype.connect = function(hostname, port, startTls, continuation
       message: 'Socket already connected'
     });
   }
+  console.log("IN CLIENTSOCKET CONNECT");
   this.onConnect = continuation;
 
   var socketTypes = startTls ? ['starttls'] : [null];
@@ -110,6 +114,7 @@ ClientSocket.prototype.connect = function(hostname, port, startTls, continuation
                                                          null);
   this._setupTransport(transport);
   this.socketType = 'tcp';
+  console.log("DONE WITH INITIAL CLIENTSOCKET CONNECT");
 };
 
 // Called due to the setEventSync call.
@@ -136,16 +141,16 @@ ClientSocket.prototype.resume = function() {
   this.rawInputStream.asyncWait(this.inputStreamCallback, 0, 0, mainThread);
 };
 
-ClientSocket.prototype.close = function() {
+ClientSocket.prototype.close = function(err) {
   this.binaryReader.close(0);
   this.rawInputStream.close(0);
   if (this.transport) {
     this.transport.close(0);
   }
   // Delete transport so getInfo doesn't think we are connected
-  delete this.transport; 
+  delete this.transport;
   if (typeof this.onDisconnect === 'function') {
-    this.onDisconnect();
+    this.onDisconnect(undefined, err);
   }
 };
 
@@ -164,7 +169,6 @@ ClientSocket.prototype.getInfo = function() {
               localAddress: nsINetAddrLocal.address,
               localPort: nsINetAddrLocal.port};
   return info;
-  
 };
 
 ClientSocket.prototype.setOnDataListener = function(listener) {
