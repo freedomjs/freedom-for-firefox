@@ -16,17 +16,17 @@ Socket_firefox.incomingConnections = {};
 Socket_firefox.socketNumber = 1;
 
 Socket_firefox.prototype.getInfo = function(continuation) {
-  if (!this.hostname || !this.port || !this.clientSocket) {
-    continuation({ "connected": false });
-  } else if(this.clientSocket) {
+  if(this.clientSocket) {
     continuation(this.clientSocket.getInfo());
   } else if (this.serverSocket) {
     continuation(this.serverSocket.getInfo());
+  } else {
+    continuation({ "connected": false });
   }
 };
 
 Socket_firefox.prototype.close = function(continuation) {
-  if (!this.hostname || !this.port || !this.clientSocket) {
+  if (!this.clientSocket && !this.serverSocket) {
     continuation(undefined, {
       "errcode": "SOCKET_CLOSED",
       "message": "Cannot close non-connected socket"
@@ -42,7 +42,6 @@ Socket_firefox.prototype.close = function(continuation) {
     closeSuccess = true;
   }
   if (closeSuccess) {
-    console.log("DISPATCHING ONDISCONNECTION");
     this.dispatchEvent("onDisconnect",
 		      {
 			"errcode": "SUCCESS",
@@ -72,20 +71,20 @@ Socket_firefox.prototype.secure = function(continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Cannot secure non-connected socket"
     });
-    return;
+  } else {
+    // Create a new ClientSocket (nsISocketTransport) object for the existing
+    // hostname and port, using type 'starttls'.  This will upgrade the existing
+    // connection to TLS, rather than create a new connection.
+    // TODO: check to make sure this doesn't result in weird race conditions if
+    // we have 2 pieces of code both trying to connect to the same hostname/port
+    // and do a starttls flow (e.g. if there are 2 instances of a GTalk social
+    // provider that are both trying to connect to GTalk simultaneously with
+    // different logins).
+    this.clientSocket = new ClientSocket();
+    this.clientSocket.setOnDataListener(this._onData.bind(this));
+    this.clientSocket.connect(this.hostname, this.port, true);
+    continuation();
   }
-  // Create a new ClientSocket (nsISocketTransport) object for the existing
-  // hostname and port, using type 'starttls'.  This will upgrade the existing
-  // connection to TLS, rather than create a new connection.
-  // TODO: check to make sure this doesn't result in weird race conditions if
-  // we have 2 pieces of code both trying to connect to the same hostname/port
-  // and do a starttls flow (e.g. if there are 2 instances of a GTalk social
-  // provider that are both trying to connect to GTalk simultaneously with
-  // different logins).
-  this.clientSocket = new ClientSocket();
-  this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(this.hostname, this.port, true);
-  continuation();
 };
 
 Socket_firefox.prototype.write = function(buffer, continuation) {
@@ -125,7 +124,7 @@ Socket_firefox.prototype.resume = function(continuation) {
 };
 
 Socket_firefox.prototype.listen = function(host, port, continuation) {
-  if (typeof this.serverSocket !== 'undefined') {
+  if (!this.serverSocket) {
     continuation(undefined, {
       "errcode": "ALREADY_CONNECTED",
       "message": "Cannot listen on existing socket."
@@ -155,7 +154,6 @@ Socket_firefox.prototype._onData = function(buffer) {
 Socket_firefox.prototype._onConnect = function(clientSocket) {
   var socketNumber = Socket_firefox.socketNumber++;
   Socket_firefox.incomingConnections[socketNumber] = clientSocket;
-  console.log("DISPATCHING ONCONNECTION");
   this.dispatchEvent("onConnection", { socket: socketNumber,
                                        host: this.host,
                                        port: this.port
