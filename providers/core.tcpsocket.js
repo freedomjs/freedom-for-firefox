@@ -44,11 +44,17 @@ Socket_firefox.prototype.close = function(continuation) {
 // TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
+  var onConnection = function(arg, err) {
+    console.log("CLIENT FIRING ONCONNECTION");
+    this.dispatchEvent("onConnection", err);
+    continuation(arg, err);
+  }.bind(this);
   this.clientSocket.onDisconnect = function(err) {
+    console.log("CLIENT FIRING ONDISCONNECT");
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(hostname, port, false, continuation);
+  this.clientSocket.connect(hostname, port, false, onConnection);
   this.hostname = hostname;
   this.port = port;
 };
@@ -74,8 +80,17 @@ Socket_firefox.prototype.secure = function(continuation) {
     // provider that are both trying to connect to GTalk simultaneously with
     // different logins).
     this.clientSocket = new ClientSocket();
+    // TODO: DRY this code (similar to 'connect' above)
+    this.clientSocket.onDisconnect = function(err) {
+      this.dispatchEvent("onDisconnect", err);
+    }.bind(this);
     this.clientSocket.setOnDataListener(this._onData.bind(this));
     this.clientSocket.connect(this.hostname, this.port, true);
+    console.log("CLIENT FIRING ONCONNECTION");
+    this.dispatchEvent("onConnection", {
+      "errcode": "SUCCESS",
+      "message": "Upgraded to TLS connection"
+    });
     continuation();
   }
 };
@@ -147,11 +162,12 @@ Socket_firefox.prototype._onData = function(buffer) {
 Socket_firefox.prototype._onConnect = function(clientSocket) {
   var socketNumber = Socket_firefox.socketNumber++;
   Socket_firefox.incomingConnections[socketNumber] = clientSocket;
-  this.dispatchEvent("onConnection", { socket: socketNumber,
-                                       host: this.host,
-                                       port: this.port
-                                     });
-
+  console.log("SERVER FIRING ONCONNECTION");
+  this.dispatchEvent("onConnection", {
+    socket: socketNumber,
+    host: this.host,
+    port: this.port
+  });
 };
 
 /** REGISTER PROVIDER **/
