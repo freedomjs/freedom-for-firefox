@@ -33,20 +33,10 @@ Socket_firefox.prototype.close = function(continuation) {
     });
     return;
   }
-  var closeSuccess = false;
   if (this.clientSocket) {
     this.clientSocket.close();
-    closeSuccess = true;
   } else if (this.serverSocket) {
     this.serverSocket.disconnect();
-    closeSuccess = true;
-  }
-  if (closeSuccess) {
-    this.dispatchEvent("onDisconnect",
-		      {
-			"errcode": "SUCCESS",
-			"message": "Socket closed by call to close"
-		      });
   }
   continuation();
 };
@@ -54,6 +44,9 @@ Socket_firefox.prototype.close = function(continuation) {
 // TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
+  this.clientSocket.onDisconnect = function(err) {
+    this.dispatchEvent("onDisconnect", err);
+  }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(hostname, port, false, continuation);
   this.hostname = hostname;
@@ -158,7 +151,7 @@ Socket_firefox.prototype._onConnect = function(clientSocket) {
                                        host: this.host,
                                        port: this.port
                                      });
-  
+
 };
 
 /** REGISTER PROVIDER **/

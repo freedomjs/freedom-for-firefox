@@ -43,7 +43,10 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
     if (e.name !== 'NS_BASE_STREAM_CLOSED') {
       console.warn(e);
     }
-    this.socket.close();
+    this.socket.close({
+      errcode: 'TODO',
+      message: 'TODOMESSAGE'
+    });
     return;
   }
   if (this.socket.onConnect) {
@@ -136,7 +139,7 @@ ClientSocket.prototype.resume = function() {
   this.rawInputStream.asyncWait(this.inputStreamCallback, 0, 0, mainThread);
 };
 
-ClientSocket.prototype.close = function() {
+ClientSocket.prototype.close = function(err) {
   this.binaryReader.close(0);
   this.rawInputStream.close(0);
   if (this.transport) {
@@ -145,7 +148,7 @@ ClientSocket.prototype.close = function() {
   // Delete transport so getInfo doesn't think we are connected
   delete this.transport;
   if (typeof this.onDisconnect === 'function') {
-    this.onDisconnect();
+    this.onDisconnect(err);
   }
 };
 
