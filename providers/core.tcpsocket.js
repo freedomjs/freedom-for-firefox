@@ -40,6 +40,9 @@ Socket_firefox.prototype.close = function(continuation) {
 // TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
+  this.clientSocket.onDisconnect = function(err) {
+    this.dispatchEvent("onDisconnect", err);
+  }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(hostname, port, false, continuation);
   this.hostname = hostname;
@@ -68,6 +71,10 @@ Socket_firefox.prototype.secure = function(continuation) {
   // provider that are both trying to connect to GTalk simultaneously with
   // different logins).
   this.clientSocket = new ClientSocket();
+  // TODO: DRY this code up (see 'connect' above)
+  this.clientSocket.onDisconnect = function(err) {
+    this.dispatchEvent("onDisconnect", err);
+  }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(this.hostname, this.port, true);
   continuation();
@@ -121,6 +128,9 @@ Socket_firefox.prototype.listen = function(host, port, continuation) {
       this.host = host;
       this.port = port;
       this.serverSocket.onConnect = this._onConnect.bind(this);
+      this.serverSocket.onDisconnect = function(err) {
+        this.dispatchEvent("onDisconnect", err);
+      }.bind(this);
       this.serverSocket.listen();
       continuation();
     } catch (e) {

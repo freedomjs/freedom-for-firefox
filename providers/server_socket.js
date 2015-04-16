@@ -37,6 +37,9 @@ ServerSocket.prototype.listen = function() {
 
 ServerSocket.prototype.disconnect = function() {
   this.nsIServerSocket.close();
+  if (this.onDisconnect) {
+    this.onDisconnect();
+  }
 };
 
 ServerSocket.prototype.getInfo = function() {
