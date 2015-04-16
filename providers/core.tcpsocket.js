@@ -2,17 +2,17 @@ var ClientSocket = require('./client_socket');
 var ServerSocket = require('./server_socket');
 
 function Socket_firefox(cap, dispatchEvent, socketId) {
-  var incommingConnections = Socket_firefox.incommingConnections;
+  var incomingConnections = Socket_firefox.incomingConnections;
   this.dispatchEvent = dispatchEvent;
   this.socketId = socketId;
-  if (socketId in incommingConnections) {
-    this.clientSocket = incommingConnections[socketId];
-    delete incommingConnections[socketId];
+  if (socketId in incomingConnections) {
+    this.clientSocket = incomingConnections[socketId];
+    delete incomingConnections[socketId];
     this.clientSocket.setOnDataListener(this._onData.bind(this));
   }
 }
 
-Socket_firefox.incommingConnections = {};
+Socket_firefox.incomingConnections = {};
 Socket_firefox.socketNumber = 1;
 
 Socket_firefox.prototype.getInfo = function(continuation) {
@@ -24,7 +24,12 @@ Socket_firefox.prototype.getInfo = function(continuation) {
 };
 
 Socket_firefox.prototype.close = function(continuation) {
-  if(this.clientSocket) {
+  if (!this.clientSocket && !this.serverSocket) {
+    continuation(undefined, {
+    "errcode": "SOCKET_CLOSED",
+    "message": "Cannot close non-connected socket"
+    });
+  } else if(this.clientSocket) {
     this.clientSocket.close();
   } else if (this.serverSocket) {
     this.serverSocket.disconnect();
@@ -50,7 +55,7 @@ Socket_firefox.prototype.secure = function(continuation) {
   if (!this.hostname || !this.port || !this.clientSocket) {
     continuation(undefined, {
       "errcode": "NOT_CONNECTED",
-      "message": "Cannot Secure Not Connected Socket"
+      "message": "Cannot secure non-connected Socket"
     });
     return;
   }
@@ -69,7 +74,12 @@ Socket_firefox.prototype.secure = function(continuation) {
 };
 
 Socket_firefox.prototype.write = function(buffer, continuation) {
-  if (this.clientSocket) {
+  if (!this.clientSocket) {
+    continuation(undefined, {
+      "errcode": "NOT_CONNECTED",
+      "message": "Cannot write non-connected socket"
+    });
+  } else {
     this.clientSocket.write(buffer);
     continuation();
   }
@@ -81,11 +91,10 @@ Socket_firefox.prototype.pause = function(continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Can only pause a connected client socket"
     });
-    return;
+  } else {
+    this.clientSocket.pause();
+    continuation();
   }
-
-  this.clientSocket.pause();
-  continuation();
 };
 
 Socket_firefox.prototype.resume = function(continuation) {
@@ -94,18 +103,17 @@ Socket_firefox.prototype.resume = function(continuation) {
       "errcode": "NOT_CONNECTED",
       "message": "Can only resume a connected client socket"
     });
-    return;
+  } else {
+    this.clientSocket.resume();
+    continuation();
   }
-
-  this.clientSocket.resume();
-  continuation();
 };
 
 Socket_firefox.prototype.listen = function(host, port, continuation) {
   if (typeof this.serverSocket !== 'undefined') {
     continuation(undefined, {
       "errcode": "ALREADY_CONNECTED",
-      "message": "Cannot Listen on existing socket."
+      "message": "Cannot listen on existing socket."
     });
   } else {
     try {
@@ -131,12 +139,12 @@ Socket_firefox.prototype._onData = function(buffer) {
 
 Socket_firefox.prototype._onConnect = function(clientSocket) {
   var socketNumber = Socket_firefox.socketNumber++;
-  Socket_firefox.incommingConnections[socketNumber] = clientSocket;
+  Socket_firefox.incomingConnections[socketNumber] = clientSocket;
   this.dispatchEvent("onConnection", { socket: socketNumber,
                                        host: this.host,
                                        port: this.port
                                      });
-  
+
 };
 
 /** REGISTER PROVIDER **/
