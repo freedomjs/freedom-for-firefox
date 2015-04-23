@@ -52,7 +52,7 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
   }
 
   var lineData = binaryReader.readByteArray(bytesAvailable);
-  var buffer = ArrayBuffer(lineData.length);
+  var buffer = new ArrayBuffer(lineData.length);
   var typedBuffer = new Uint8Array(buffer);
   typedBuffer.set(lineData);
   if (typeof this.socket.onData === 'function') {
@@ -79,7 +79,8 @@ ClientSocket.prototype._setupTransport = function(transport) {
   this.transport = transport;
 
   // Set up readers
-  this.binaryReader = Components.classes["@mozilla.org/binaryinputstream;1"].createInstance(Components.interfaces.nsIBinaryInputStream);
+  this.binaryReader = Components.classes["@mozilla.org/binaryinputstream;1"]
+    .createInstance(Components.interfaces.nsIBinaryInputStream);
   this.rawInputStream = this.transport.openInputStream(0,0,0);
   this.binaryReader.setInputStream(this.rawInputStream);
 
@@ -92,25 +93,27 @@ ClientSocket.prototype._setupTransport = function(transport) {
   this.transport.setEventSink(this, mainThread);
 };
 
-ClientSocket.prototype.connect = function(hostname, port, startTls, continuation) {
-  if (typeof this.transport !== 'undefined') {
-    return continuation(undefined, {
-      errcode: 'ALREADY_CONNECTED ',
-      message: 'Socket already connected'
-    });
-  }
-  this.onConnect = continuation;
+ClientSocket.prototype.connect =
+  function(hostname, port, startTls, continuation) {
+    if (typeof this.transport !== 'undefined') {
+      return continuation(undefined, {
+        errcode: 'ALREADY_CONNECTED ',
+        message: 'Socket already connected'
+      });
+    }
+    this.onConnect = continuation;
 
-  var socketTypes = startTls ? ['starttls'] : [null];
-  var numSocketTypes = startTls ? 1 : 0;
-  var transport = socketTransportService.createTransport(socketTypes,
-                                                         numSocketTypes,
-                                                         hostname,
-                                                         port,
-                                                         null);
-  this._setupTransport(transport);
-  this.socketType = 'tcp';
-};
+    var socketTypes = startTls ? ['starttls'] : [null];
+    var numSocketTypes = startTls ? 1 : 0;
+    var transport = socketTransportService.createTransport(
+      socketTypes,
+      numSocketTypes,
+      hostname,
+      port,
+      null);
+    this._setupTransport(transport);
+    this.socketType = 'tcp';
+  };
 
 // Called due to the setEventSync call.
 ClientSocket.prototype.onTransportStatus = function (transport, status) {
@@ -143,7 +146,7 @@ ClientSocket.prototype.close = function() {
     this.transport.close(0);
   }
   // Delete transport so getInfo doesn't think we are connected
-  delete this.transport; 
+  delete this.transport;
   if (typeof this.onDisconnect === 'function') {
     this.onDisconnect();
   }
@@ -158,13 +161,12 @@ ClientSocket.prototype.getInfo = function() {
   }
   var nsINetAddrPeer = transport.getScriptablePeerAddr();
   var nsINetAddrLocal = transport.getScriptableSelfAddr();
-  var info = {connected: true,
-              peerAddress: nsINetAddrPeer.address,
-              peerPort: nsINetAddrPeer.port,
-              localAddress: nsINetAddrLocal.address,
-              localPort: nsINetAddrLocal.port};
+  var info = { connected: true,
+               peerAddress: nsINetAddrPeer.address,
+               peerPort: nsINetAddrPeer.port,
+               localAddress: nsINetAddrLocal.address,
+               localPort: nsINetAddrLocal.port };
   return info;
-  
 };
 
 ClientSocket.prototype.setOnDataListener = function(listener) {

@@ -1,3 +1,5 @@
+/* jslint evil:true */
+
 var testUtil = require('freedom/spec/util');
 var self = Components.stack.filename;
 var base = self.substr(0, self.lastIndexOf('/'));
@@ -13,7 +15,7 @@ var setup = function () {
   testUtil.setModuleStrategy(require('freedom/src/link/worker'), './freedom-for-firefox.jsm');
 };
 
-var jsmContext = Function("return this;")();
+var jsmContext = Function("return this;")();  // Note: 'evil' eval per jshint
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.importRelative(jsmContext, "freedom-for-firefox.jsm");
 
@@ -42,13 +44,13 @@ describe("integration: core.rtcpeerconnection",
     require("freedom/providers/core/core.rtcdatachannel"),
     setup));
 
-describe("integration: core.xhr", 
-    require("freedom/spec/providers/coreIntegration/xhr.integration.src").bind(this, 
+describe("integration: core.xhr",
+    require("freedom/spec/providers/coreIntegration/xhr.integration.src").bind(this,
     require("freedom/providers/core/core.xhr"), setup));
 
 describe("integration: core.tcpsocket",
-    require('freedom/spec/providers/coreIntegration/tcpsocket.integration.src').bind(this,
-    require('../providers/core.tcpsocket'), setup));
+         require('freedom/spec/providers/coreIntegration/tcpsocket.integration.src').bind(this,
+                                                                                          require('../providers/core.tcpsocket'), setup));
 
 describe("integration: core.udpsocket",
     require('freedom/spec/providers/coreIntegration/udpsocket.integration.src').bind(this,
