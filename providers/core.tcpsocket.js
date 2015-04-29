@@ -28,6 +28,12 @@ Socket_firefox.prototype.close = function(continuation) {
     this.clientSocket.close();
   } else if (this.serverSocket) {
     this.serverSocket.disconnect();
+  } else {
+    continuation(undefined, {
+      'errcode': 'SOCKET_CLOSED',
+      'message': 'Socket Already Closed, or was never opened'
+    });
+    return;
   }
   continuation();
 };

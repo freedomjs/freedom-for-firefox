@@ -20,27 +20,27 @@
   "devDependencies": {
     "async": "^0.9.0",
     "es5-shim": "^4.1.0",
-    "es6-promise": "^2.0.0",
+    "es6-promise": "^2.1.0",
     "folderify": "^0.6.0",
-    "freedom": "~0.6.22",
-    "fs-extra": "^0.16.0",
-    "glob": "^4.3.0",
+    "freedom": "~0.6.23",
+    "fs-extra": "^0.18.0",
+    "glob": "^5.0.0",
     "grunt": "~0.4.2",
     "grunt-browserify": "^3.0.1",
     "grunt-bump": "0.0.16",
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-jshint": "~0.11.0",
-    "grunt-mozilla-addon-sdk": "^0.3.2",
+    "grunt-mozilla-addon-sdk": "^0.4.0",
     "grunt-npm": "0.0.2",
     "grunt-prompt": "^1.2.1",
     "grunt-shell": "^1.1.1",
-    "jasmine-core": "^2.0.4",
+    "jasmine-core": "^2.3.0",
     "node-json-minify": "^0.1.3-a",
     "webrtc-adapter": "^0.0.6"
   },
   "peerDependencies": {
-    "freedom": "~0.6.22"
+    "freedom": "~0.6.23"
   },
   "scripts": {}
 }
