@@ -15,6 +15,9 @@ nsIServerSocketListener.prototype.onSocketAccepted = function(nsiServerSocket, t
 };
 
 nsIServerSocketListener.prototype.onStopListening = function(nsiServerSocket, status) {
+  if (this.serverSocket.onDisconnect) {
+    this.serverSocket.onDisconnect();
+  }
 };
 
 // Address is currently ignored, as it is not possible to specify a
@@ -37,6 +40,9 @@ ServerSocket.prototype.listen = function() {
 
 ServerSocket.prototype.disconnect = function() {
   this.nsIServerSocket.close();
+  if (this.onDisconnect) {
+    this.onDisconnect();
+  }
 };
 
 ServerSocket.prototype.getInfo = function() {
