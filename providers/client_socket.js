@@ -148,7 +148,7 @@ ClientSocket.prototype.close = function() {
   // Delete transport so getInfo doesn't think we are connected
   delete this.transport;
   if (typeof this.onDisconnect === 'function') {
-    this.onDisconnect();
+    //this.onDisconnect();  // TODO: this breaks pause/resume, investigate
   }
 };
 
