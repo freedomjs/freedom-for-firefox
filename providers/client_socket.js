@@ -150,7 +150,7 @@ ClientSocket.prototype.close = function(continuation) {
   if (typeof this.onDisconnect === 'function') {
     this.onDisconnect(continuation);
     delete this.onDisconnect;
-  } else {
+  } else if (continuation) {
     continuation();
   }
 };

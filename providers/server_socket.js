@@ -42,7 +42,8 @@ ServerSocket.prototype.disconnect = function(continuation) {
   this.nsIServerSocket.close();
   if (this.onDisconnect) {
     this.onDisconnect(continuation);
-  } else {
+    delete this.onDisconnect;
+  } else if (continuation) {
     continuation();
   }
 };
