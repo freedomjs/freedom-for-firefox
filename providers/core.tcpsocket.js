@@ -46,7 +46,7 @@ Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
   this.clientSocket.onDisconnect = function(c, err) {
     this.dispatchEvent("onDisconnect", err);
-    c();
+    if (typeof c === 'function') { c(); }
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(hostname, port, false, continuation);
@@ -79,7 +79,7 @@ Socket_firefox.prototype.secure = function(continuation) {
   // TODO: DRY this code up (see 'connect' above)
   this.clientSocket.onDisconnect = function(c, err) {
     this.dispatchEvent("onDisconnect", err);
-    c();
+    if (typeof c === 'function') { c(); }
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(this.hostname, this.port, true, continuation);
@@ -135,7 +135,7 @@ Socket_firefox.prototype.listen = function(host, port, continuation) {
       this.serverSocket.onConnect = this._onConnect.bind(this);
       this.serverSocket.onDisconnect = function(c, err) {
         this.dispatchEvent("onDisconnect", err);
-        c();
+        if (typeof c === 'function') { c(); }
       }.bind(this);
       this.serverSocket.listen();
       continuation();
