@@ -40,10 +40,10 @@ ServerSocket.prototype.listen = function() {
 
 ServerSocket.prototype.disconnect = function(continuation) {
   this.nsIServerSocket.close();
-  if (this.onDisconnect) {
+  if (typeof this.onDisconnect === 'function') {
     this.onDisconnect(continuation);
     delete this.onDisconnect;
-  } else if (continuation) {
+  } else if (typeof continuation === 'function') {
     continuation();
   }
 };
@@ -53,9 +53,9 @@ ServerSocket.prototype.getInfo = function() {
   var port = nsIServerSocket.port;
   var localAddress = '127.0.0.1';
   var socketType = 'tcp';
-  var info = {socketType: socketType,
-              localAddress: localAddress,
-              localPort: port};
+  var info = { socketType   : socketType,
+               localAddress : localAddress,
+               localPort    : port };
   return info;
 };
 
