@@ -139,7 +139,7 @@ ClientSocket.prototype.resume = function() {
   this.rawInputStream.asyncWait(this.inputStreamCallback, 0, 0, mainThread);
 };
 
-ClientSocket.prototype.close = function() {
+ClientSocket.prototype.close = function(continuation) {
   this.binaryReader.close(0);
   this.rawInputStream.close(0);
   if (this.transport) {
@@ -148,7 +148,10 @@ ClientSocket.prototype.close = function() {
   // Delete transport so getInfo doesn't think we are connected
   delete this.transport;
   if (typeof this.onDisconnect === 'function') {
-    //this.onDisconnect();  // TODO: this breaks pause/resume, investigate
+    this.onDisconnect(continuation);
+    delete this.onDisconnect;
+  } else {
+    continuation();
   }
 };
 

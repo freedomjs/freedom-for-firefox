@@ -26,27 +26,26 @@ Socket_firefox.prototype.getInfo = function(continuation) {
 Socket_firefox.prototype.close = function(continuation) {
   if (!this.clientSocket && !this.serverSocket) {
     continuation(undefined, {
-    "errcode": "SOCKET_CLOSED",
-    "message": "Cannot close non-connected socket"
+      "errcode": "SOCKET_CLOSED",
+      "message": "Cannot close non-connected socket"
     });
   } else if(this.clientSocket) {
-    this.clientSocket.close();
+    this.clientSocket.close(continuation);
   } else if (this.serverSocket) {
-    this.serverSocket.disconnect();
+    this.serverSocket.disconnect(continuation);
   } else {
     continuation(undefined, {
       'errcode': 'SOCKET_CLOSED',
       'message': 'Socket Already Closed, or was never opened'
     });
-    return;
   }
-  continuation();
 };
 
 // TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
-  this.clientSocket.onDisconnect = function(err) {
+  this.clientSocket.onDisconnect = function(c, err) {
+    c();
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
@@ -78,12 +77,12 @@ Socket_firefox.prototype.secure = function(continuation) {
   // different logins).
   this.clientSocket = new ClientSocket();
   // TODO: DRY this code up (see 'connect' above)
-  this.clientSocket.onDisconnect = function(err) {
+  this.clientSocket.onDisconnect = function(c, err) {
+    c();
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(this.hostname, this.port, true);
-  continuation();
+  this.clientSocket.connect(this.hostname, this.port, true, continuation);
 };
 
 Socket_firefox.prototype.write = function(buffer, continuation) {
@@ -134,8 +133,9 @@ Socket_firefox.prototype.listen = function(host, port, continuation) {
       this.host = host;
       this.port = port;
       this.serverSocket.onConnect = this._onConnect.bind(this);
-      this.serverSocket.onDisconnect = function(err) {
+      this.serverSocket.onDisconnect = function(c, err) {
         this.dispatchEvent("onDisconnect", err);
+        c();
       }.bind(this);
       this.serverSocket.listen();
       continuation();
