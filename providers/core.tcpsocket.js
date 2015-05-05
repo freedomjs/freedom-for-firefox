@@ -59,9 +59,7 @@ Socket_firefox.prototype.dispatchDisconnect = function(continuation, err) {
     };
   }
   this.dispatchEvent('onDisconnect', err);
-  if (typeof continuation === 'function') {
-    continuation();
-  }
+  continuation();
 };
 
 Socket_firefox.prototype.prepareSecure = function(continuation) {
@@ -87,7 +85,7 @@ Socket_firefox.prototype.secure = function(continuation) {
   // different logins).
   this.clientSocket = new ClientSocket();
   // TODO: DRY this code up (see 'connect' above)
-  this.clientSocket.onDisconnect = this.dispatchDisconnect.bind(this); 
+  this.clientSocket.onDisconnect = this.dispatchDisconnect.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(this.hostname, this.port, true, continuation);
 };
