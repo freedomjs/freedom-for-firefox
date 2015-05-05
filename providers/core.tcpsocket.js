@@ -44,14 +44,24 @@ Socket_firefox.prototype.close = function(continuation) {
 // TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
-  this.clientSocket.onDisconnect = function(c, err) {
-    this.dispatchEvent("onDisconnect", err);
-    if (typeof c === 'function') { c(); }
-  }.bind(this);
+  this.clientSocket.onDisconnect = this.dispatchDisconnect.bind(this); 
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(hostname, port, false, continuation);
   this.hostname = hostname;
   this.port = port;
+};
+
+Socket_firefox.prototype.dispatchDisconnect = function(continuation, err) {
+  if (typeof err === 'undefined') {
+    err = {
+      'errcode': 'CONNECTION_CLOSED',
+      'message': 'Connection closed gracefully'
+    };
+  }
+  this.dispatchEvent('onDisconnect', err);
+  if (typeof continuation === 'function') {
+    continuation();
+  }
 };
 
 Socket_firefox.prototype.prepareSecure = function(continuation) {
@@ -77,10 +87,7 @@ Socket_firefox.prototype.secure = function(continuation) {
   // different logins).
   this.clientSocket = new ClientSocket();
   // TODO: DRY this code up (see 'connect' above)
-  this.clientSocket.onDisconnect = function(c, err) {
-    this.dispatchEvent("onDisconnect", err);
-    if (typeof c === 'function') { c(); }
-  }.bind(this);
+  this.clientSocket.onDisconnect = this.dispatchDisconnect.bind(this); 
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(this.hostname, this.port, true, continuation);
 };
@@ -133,10 +140,7 @@ Socket_firefox.prototype.listen = function(host, port, continuation) {
       this.host = host;
       this.port = port;
       this.serverSocket.onConnect = this._onConnect.bind(this);
-      this.serverSocket.onDisconnect = function(c, err) {
-        this.dispatchEvent("onDisconnect", err);
-        if (typeof c === 'function') { c(); }
-      }.bind(this);
+      this.serverSocket.onDisconnect = this.dispatchDisconnect.bind(this); 
       this.serverSocket.listen();
       continuation();
     } catch (e) {
