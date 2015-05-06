@@ -134,7 +134,8 @@ Socket_firefox.prototype.listen = function(host, port, continuation) {
     });
   } else {
     try {
-      this.serverSocket = new ServerSocket(host, port);
+      this.serverSocket = new ServerSocket(host, port,
+                                           undefined, dispatchEvent);
       this.host = host;
       this.port = port;
       this.serverSocket.onConnect = this._onConnect.bind(this);
