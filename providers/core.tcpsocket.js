@@ -85,7 +85,9 @@ Socket_firefox.prototype.secure = function(continuation) {
   // and do a starttls flow (e.g. if there are 2 instances of a GTalk social
   // provider that are both trying to connect to GTalk simultaneously with
   // different logins).
-  this.clientSocket.onDisconnect = undefined;  // to avoid undesired dispatching
+  if (this.clientSocket) {
+    this.clientSocket.onDisconnect = undefined;  // avoid undesired dispatching
+  }
   this.clientSocket = new ClientSocket();
   // TODO: DRY this code up (see 'connect' above)
   this.clientSocket.onDisconnect = this.dispatchDisconnect.bind(this);
