@@ -1,3 +1,4 @@
+/* jshint esnext:true */
 
 var ClientSocket = require('../providers/client_socket');
 var ServerSocket = require('../providers/server_socket');
@@ -39,8 +40,7 @@ describe("unit: core.tcpsocket", function() {
       sock.setOnDataListener(function (data) {
         const message = clientSocket.arrayBufferToString(data);
         expect(message).toEqual(stringMessage);
-        serverSocket.disconnect();
-        done();
+        serverSocket.disconnect(done);
       });
     };
     clientSocket.connect("localhost", portNumber, false);
@@ -55,9 +55,10 @@ describe("unit: core.tcpsocket", function() {
     }
     return buf;
   }
+
   function ab2str(buf) {
     return String.fromCharCode.apply(null, new Uint8Array(buf));
-  };
+  }
 
   it("secures socket with starttls", function(done) {
     var INIT_XMPP = '<stream:stream ' +

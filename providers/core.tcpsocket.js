@@ -26,33 +26,42 @@ Socket_firefox.prototype.getInfo = function(continuation) {
 Socket_firefox.prototype.close = function(continuation) {
   if (!this.clientSocket && !this.serverSocket) {
     continuation(undefined, {
-    "errcode": "SOCKET_CLOSED",
-    "message": "Cannot close non-connected socket"
+      "errcode": "SOCKET_CLOSED",
+      "message": "Cannot close non-connected socket"
     });
   } else if(this.clientSocket) {
-    this.clientSocket.close();
+    this.clientSocket.close(continuation);
   } else if (this.serverSocket) {
-    this.serverSocket.disconnect();
+    this.serverSocket.disconnect(continuation);
   } else {
     continuation(undefined, {
       'errcode': 'SOCKET_CLOSED',
       'message': 'Socket Already Closed, or was never opened'
     });
-    return;
   }
-  continuation();
 };
 
 // TODO: handle failures.
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
-  this.clientSocket.onDisconnect = function(err) {
-    this.dispatchEvent("onDisconnect", err);
-  }.bind(this);
+  this.clientSocket.onDisconnect = this.dispatchDisconnect.bind(this); 
   this.clientSocket.setOnDataListener(this._onData.bind(this));
   this.clientSocket.connect(hostname, port, false, continuation);
   this.hostname = hostname;
   this.port = port;
+};
+
+Socket_firefox.prototype.dispatchDisconnect = function(continuation, err) {
+  if (typeof err === 'undefined') {
+    err = {
+      'errcode': 'CONNECTION_CLOSED',
+      'message': 'Connection closed gracefully'
+    };
+  }
+  this.dispatchEvent('onDisconnect', err);
+  if (typeof continuation === 'function') {
+    continuation();
+  }
 };
 
 Socket_firefox.prototype.prepareSecure = function(continuation) {
@@ -76,14 +85,14 @@ Socket_firefox.prototype.secure = function(continuation) {
   // and do a starttls flow (e.g. if there are 2 instances of a GTalk social
   // provider that are both trying to connect to GTalk simultaneously with
   // different logins).
+  if (this.clientSocket) {
+    this.clientSocket.onDisconnect = undefined;  // avoid undesired dispatching
+  }
   this.clientSocket = new ClientSocket();
   // TODO: DRY this code up (see 'connect' above)
-  this.clientSocket.onDisconnect = function(err) {
-    this.dispatchEvent("onDisconnect", err);
-  }.bind(this);
+  this.clientSocket.onDisconnect = this.dispatchDisconnect.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(this.hostname, this.port, true);
-  continuation();
+  this.clientSocket.connect(this.hostname, this.port, true, continuation);
 };
 
 Socket_firefox.prototype.write = function(buffer, continuation) {
@@ -130,13 +139,12 @@ Socket_firefox.prototype.listen = function(host, port, continuation) {
     });
   } else {
     try {
-      this.serverSocket = new ServerSocket(host, port);
+      this.serverSocket = new ServerSocket(host, port,
+                                           undefined, dispatchEvent);
       this.host = host;
       this.port = port;
       this.serverSocket.onConnect = this._onConnect.bind(this);
-      this.serverSocket.onDisconnect = function(err) {
-        this.dispatchEvent("onDisconnect", err);
-      }.bind(this);
+      this.serverSocket.onDisconnect = this.dispatchDisconnect.bind(this); 
       this.serverSocket.listen();
       continuation();
     } catch (e) {
