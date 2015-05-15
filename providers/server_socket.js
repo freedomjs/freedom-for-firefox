@@ -65,9 +65,11 @@ ServerSocket.prototype.getInfo = function() {
   var port = nsIServerSocket.port;
   var localAddress = '127.0.0.1';
   var socketType = 'tcp';
-  var info = { socketType   : socketType,
-               localAddress : localAddress,
-               localPort    : port };
+  var info = {
+    socketType   : socketType,
+    localAddress : localAddress,
+    localPort    : port
+  };
   return info;
 };
 
