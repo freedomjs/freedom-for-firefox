@@ -9,6 +9,7 @@ function Socket_firefox(cap, dispatchEvent, socketId) {
     this.clientSocket = incomingConnections[socketId];
     delete incomingConnections[socketId];
     this.clientSocket.setOnDataListener(this._onData.bind(this));
+    delete this.clientSocket.transport;  // new socket shouldn't be connected
   }
 }
 
