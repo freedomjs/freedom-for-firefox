@@ -9,6 +9,7 @@ function Socket_firefox(cap, dispatchEvent, socketId) {
     this.clientSocket = incomingConnections[socketId];
     delete incomingConnections[socketId];
     this.clientSocket.setOnDataListener(this._onData.bind(this));
+    delete this.clientSocket.transport;  // new socket shouldn't be connected
   }
 }
 
@@ -83,8 +84,7 @@ Socket_firefox.prototype.secure = function(continuation) {
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(this.hostname, this.port, true);
-  continuation();
+  this.clientSocket.connect(this.hostname, this.port, true, continuation);
 };
 
 Socket_firefox.prototype.write = function(buffer, continuation) {
@@ -157,10 +157,11 @@ Socket_firefox.prototype._onData = function(buffer) {
 Socket_firefox.prototype._onConnect = function(clientSocket) {
   var socketNumber = Socket_firefox.socketNumber++;
   Socket_firefox.incomingConnections[socketNumber] = clientSocket;
-  this.dispatchEvent("onConnection", { socket: socketNumber,
-                                       host: this.host,
-                                       port: this.port
-                                     });
+  this.dispatchEvent("onConnection", {
+    socket: socketNumber,
+    host: this.host,
+    port: this.port
+  });
 
 };
 
