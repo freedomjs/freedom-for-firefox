@@ -7,6 +7,7 @@ module.exports = function (grunt) {
   var glob = require('glob');
   var pkg = require('../package.json');
   var activeReporters = {};
+  grunt.option('firefox-bin', '/usr/bin/firefox');  // TODO more crossplatformy
  
   grunt.registerMultiTask('build-test-addon', pkg.description, function() {
     var name = this.target;
@@ -125,7 +126,9 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('integration', ['build-test-addon', 'jpm:run', 'report-tests:fromBuild']);
+  grunt.registerTask('integration', ['build-test-addon',
+                                     'jpm:run',
+                                     'report-tests:fromBuild']);
 
   
   function getFiles(specs) {
@@ -176,7 +179,7 @@ module.exports = function (grunt) {
     var buffer = new Buffer(toLink);
     
     fs.copySync(ctx.template, ctx.dir);
-    var fd = fs.openSync(ctx.dir + '/lib/main.js', 'a');
+    var fd = fs.openSync(ctx.dir + '/index.js', 'a');
     fs.writeSync(fd, buffer, 0, buffer.length, null);
     grunt.log.ok('Extension staged in ' + ctx.target);
   }
