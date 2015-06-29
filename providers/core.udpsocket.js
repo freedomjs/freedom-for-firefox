@@ -10,7 +10,10 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
     port = -1;
   }
   try {
-    this._nsIUDPSocket.init(port, false);
+    var isLocal = address === '127.0.0.1' ||
+        address === 'localhost' ||
+        address.match(/^(0*:)+0*1$/);
+    this._nsIUDPSocket.init(port, isLocal);
     this._nsIUDPSocket.asyncListen(new nsIUDPSocketListener(this));
     continuation(0);
   } catch (e) {
@@ -23,7 +26,7 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
 
 UDP_Firefox.prototype.getInfo = function(continuation) {
   var returnValue = {
-    localAddress: "localhost",
+    localAddress: this._nsIUDPSocket.localAddr.address,
     localPort: this._nsIUDPSocket.port
   };
   continuation(returnValue);
