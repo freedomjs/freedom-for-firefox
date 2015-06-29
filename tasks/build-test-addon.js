@@ -64,36 +64,25 @@ module.exports = function (grunt) {
     }
 
     // Configure downstream cfx run to use the generated addon.
-    if (!grunt.config.get('mozilla-cfx')) {
-      grunt.config.set('mozilla-cfx', {
-        'test': {
-          options: {
-            'mozilla-addon-sdk': "1_17",
-            extension_dir: ctx.target,
-            command: "run",
-            arguments: "-v"
-          }
+    if (!grunt.config.get('jpm')) {
+      grunt.config.set('jpm', {
+        options: {
+          src: './.build/',
+          xpi: './tmp/'
         }
-      });
+      })
     }
     return true;
   });
 
-  grunt.loadNpmTasks('grunt-mozilla-addon-sdk');
-  if (!grunt.config.get('mozilla-addon-sdk')) {
-    grunt.config.set('mozilla-addon-sdk', {
-      '1_17': {
-        options: {
-          revision: "1.17"
-        }
-      },
-      master: {
-        options: {
-          revision: "master",
-          github: true
-        }
+  grunt.loadNpmTasks('grunt-jpm');
+  if (!grunt.config.get('jpm')) {
+    grunt.config.set('jpm', {
+      options: {
+        src: './.build/',
+        xpi: './tmp/'
       }
-    });
+    })
   }
 
   grunt.registerTask('report-tests', pkg.description, function() {
@@ -136,7 +125,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('integration', ['mozilla-addon-sdk:1_17', 'build-test-addon', 'mozilla-cfx:test', 'report-tests:fromBuild']);
+  grunt.registerTask('integration', ['build-test-addon', 'jpm:run', 'report-tests:fromBuild']);
 
   
   function getFiles(specs) {
