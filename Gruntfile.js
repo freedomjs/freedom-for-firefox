@@ -102,7 +102,7 @@ module.exports = function (grunt) {
               config: 'bump.options.tagMessage',
               type: 'input',
               message: 'Enter a git tag message:',
-            default: 'v%VERSION%'
+              default: 'v%VERSION%'
             }
           ]
         }
