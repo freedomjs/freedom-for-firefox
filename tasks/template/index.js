@@ -1,11 +1,11 @@
 // Jasmine needs to replace these when a clock is installed, but gets confused
-var {setTimeout, setInterval,
-     clearTimeout, clearInterval} = require("./sdk/timers");
+var { setTimeout, setInterval,
+      clearTimeout, clearInterval } = require("sdk/timers");
 
-const {Cu} = require("./chrome");
+const { Cu } = require("chrome");
 const { atob, btoa } = Cu.import("resource://gre/modules/Services.jsm", {});
-const self = require("./sdk/self");
-var Request = require("./sdk/request").Request;
+const self = require("sdk/self");
+var Request = require("sdk/request").Request;
 
 var underTest = null;
 var tests = [];
@@ -34,7 +34,7 @@ var completeTesting = function() {
   if (!stayOpen) {
     Cu.unload(underTest);
 
-    var system = require("./sdk/system");
+    var system = require("sdk/system");
     system.exit(0);
   }
 };
