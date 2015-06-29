@@ -64,12 +64,12 @@ module.exports = function (grunt) {
       activeReporters[ctx.port] = new web();
     }
 
-    // Configure downstream cfx run to use the generated addon.
+    // Configure downstream jpm run to use the generated addon.
     if (!grunt.config.get('jpm')) {
       grunt.config.set('jpm', {
         options: {
           src: './.build/',
-          xpi: './tmp/'
+          xpi: './.build/'
         }
       })
     }
@@ -81,7 +81,7 @@ module.exports = function (grunt) {
     grunt.config.set('jpm', {
       options: {
         src: './.build/',
-        xpi: './tmp/'
+        xpi: './.build/'
       }
     })
   }
