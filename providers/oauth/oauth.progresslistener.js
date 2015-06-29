@@ -35,13 +35,17 @@ FirefoxTabsAuth.prototype.initiateOAuth = function (redirectURIs, continuation) 
   return false;
 };
 
-FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continuation) {
+FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interactive, continuation) {
   "use strict";
   var gBrowser = wm.getMostRecentWindow("navigator:browser").gBrowser,
     listener,
     complete,
     tab,
     previousTab = gBrowser.selectedTab;
+
+  if (interactive === undefined) {
+    interactive = true;
+  }
 
   listener = {
     QueryInterface: XPCOMUtils.generateQI(["nsIWebProgressListener", "nsISupportsWeakReference"]),
@@ -67,7 +71,9 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continua
 
   complete = function (location) {
     gBrowser.removeProgressListener(listener);
-    gBrowser.selectedTab = previousTab;
+    if (interactive) {
+      gBrowser.selectedTab = previousTab;
+    }
     // Need to wait until the tab has switched before removing it
     setTimeout(function () {
       gBrowser.removeTab(tab);
@@ -80,7 +86,9 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continua
   //Timeout before switching makes sure the progress listener is installed.
   setTimeout(function () {
     tab = gBrowser.addTab(authUrl);
-    gBrowser.selectedTab = tab;
+    if (interactive) {
+      gBrowser.selectedTab = tab;
+    }
   }, 100);
 };
 
