@@ -39,7 +39,7 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
 UDP_Firefox.prototype.getInfo = function(continuation) {
   var returnValue = {
     localAddress: this._nsIUDPSocket.localAddr.address,
-    localPort: this._nsIUDPSocket.port
+    localPort: this._nsIUDPSocket.localAddr.port
   };
   continuation(returnValue);
 };
