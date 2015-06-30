@@ -14,10 +14,14 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
   // to these supported addresses.
   // TODO: Remove this check once https://bugzilla.mozilla.org/show_bug.cgi?id=1178427
   // is fixed.
-  var isLocal = address === '127.0.0.1' || address === 'localhost';
-  var isAny = address === '0.0.0.0';
+  var isLocal = address === "127.0.0.1" || address === "localhost";
+  var isAny = address === "0.0.0.0";
   if (!isLocal && !isAny) {
-    continuation(-1);
+    continuation(undefined, {
+      errcode: "INVALID_ARGUMENT",
+      message: "Can't bind " + address +
+          "; only 127.0.0.1 and 0.0.0.0 are supported in Firefox."
+    });
     return;
   }
   try {
