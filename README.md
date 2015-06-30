@@ -42,7 +42,9 @@ Some helpful flags you can add to the `grunt test` command:
 
 If you want the browser to stay open after the test run (e.g. to investigate
 more in the debugger console) you can change `stayOpen` in
-`tasks/build-test-addon.js` to `true`.
+`tasks/build-test-addon.js` to `true`. You can also directly run the addon
+by installing jpm (`npm install jpm -g`) and then entering the `.build/` path
+and executing `jpm run`.
 
 # FAQ
 - Mac OS X firewalls have been known to block WebRTC when set to its strictest setting.
