@@ -14,7 +14,10 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
     this._nsIUDPSocket.asyncListen(new nsIUDPSocketListener(this));
     continuation(0);
   } catch (e) {
-    continuation(-1);
+    continuation(undefined, {
+      errcode: "BIND_FAILED",
+      message: "Failed to Bind: " + e.message
+    });
   }
 };
 
