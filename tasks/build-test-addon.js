@@ -7,7 +7,6 @@ module.exports = function (grunt) {
   var glob = require('glob');
   var pkg = require('../package.json');
   var activeReporters = {};
-  grunt.option('firefox-bin', '/usr/bin/firefox');  // TODO more crossplatformy
  
   grunt.registerMultiTask('build-test-addon', pkg.description, function() {
     var name = this.target;
