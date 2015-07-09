@@ -40,6 +40,7 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
   var gBrowser = wm.getMostRecentWindow("navigator:browser").gBrowser,
     listener,
     complete,
+    fail,
     tab,
     previousTab = gBrowser.selectedTab;
 

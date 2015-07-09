@@ -40,6 +40,7 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
   var gBrowser = wm.getMostRecentWindow("navigator:browser").gBrowser,
     listener,
     complete,
+    fail,
     tab,
     previousTab = gBrowser.selectedTab;
 
@@ -69,7 +70,9 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
     }
   };
 
+  var hasCredentials = false;
   complete = function (location) {
+    hasCredentials = true;
     httpRequestObserver.unregister();
     if (interactive) {
       gBrowser.selectedTab = previousTab;
@@ -79,6 +82,12 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
       gBrowser.removeTab(tab);
       continuation(location);
     }, 100);
+  };
+
+  fail = function () {
+    gBrowser.removeProgressListener(listener);
+    gBrowser.removeTab(tab);
+    continuation(undefined, 'Error in launchAuthFlow');
   };
 
   httpRequestObserver.register();
