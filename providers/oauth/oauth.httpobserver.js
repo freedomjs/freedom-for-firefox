@@ -88,6 +88,12 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
     tab = gBrowser.addTab(authUrl);
     if (interactive) {
       gBrowser.selectedTab = tab;
+    } else {
+      setTimeout(function () {
+        if (!hasCredentials) {
+          fail();
+        }
+      }, 5000);
     }
   }, 100);
 };

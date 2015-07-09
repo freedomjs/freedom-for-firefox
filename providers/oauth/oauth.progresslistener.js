@@ -69,7 +69,9 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
     }
   };
 
+  var hasCredentials = false;
   complete = function (location) {
+    hasCredentials = true;
     gBrowser.removeProgressListener(listener);
     if (interactive) {
       gBrowser.selectedTab = previousTab;
@@ -81,6 +83,12 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
     }, 100);
   };
 
+  fail = function () {
+    gBrowser.removeProgressListener(listener);
+    gBrowser.removeTab(tab);
+    continuation(undefined, 'Error in launchAuthFlow');
+  };
+
   gBrowser.addProgressListener(listener);
 
   //Timeout before switching makes sure the progress listener is installed.
@@ -88,6 +96,12 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
     tab = gBrowser.addTab(authUrl);
     if (interactive) {
       gBrowser.selectedTab = tab;
+    } else {
+      setTimeout(function () {
+        if (!hasCredentials) {
+          fail();
+        }
+      }, 5000);
     }
   }, 100);
 };
