@@ -3,6 +3,7 @@
   "description": "Embracing a distributed web",
   "version": "0.6.14",
   "homepage": "http://freedomjs.org",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "http://github.com/freedomjs/freedom-for-firefox/issues",
     "email": "freedom@cs.washington.edu"
