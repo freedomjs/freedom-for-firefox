@@ -9,19 +9,37 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
   if (port < 1) {
     port = -1;
   }
+  // This interface appears to be IPv4-only, and only supports binding to
+  // localhost or any-interface.  To minimize confusion, we restrict binding
+  // to these supported addresses.
+  // TODO: Remove this check once https://bugzilla.mozilla.org/show_bug.cgi?id=1178427
+  // is fixed.
+  var isLocal = address === "127.0.0.1" || address === "localhost";
+  var isAny = address === "0.0.0.0";
+  if (!isLocal && !isAny) {
+    continuation(undefined, {
+      errcode: "INVALID_ARGUMENT",
+      message: "Can't bind " + address +
+          "; only 127.0.0.1 and 0.0.0.0 are supported in Firefox."
+    });
+    return;
+  }
   try {
-    this._nsIUDPSocket.init(port, false);
+    this._nsIUDPSocket.init(port, isLocal);
     this._nsIUDPSocket.asyncListen(new nsIUDPSocketListener(this));
     continuation(0);
   } catch (e) {
-    continuation(-1);
+    continuation(undefined, {
+      errcode: "BIND_FAILED",
+      message: "Failed to Bind: " + e.message
+    });
   }
 };
 
 UDP_Firefox.prototype.getInfo = function(continuation) {
   var returnValue = {
-    localAddress: "localhost",
-    localPort: this._nsIUDPSocket.port
+    localAddress: this._nsIUDPSocket.localAddr.address,
+    localPort: this._nsIUDPSocket.localAddr.port
   };
   continuation(returnValue);
 };
