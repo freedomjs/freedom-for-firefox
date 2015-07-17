@@ -30,10 +30,16 @@ Socket_firefox.prototype.close = function(continuation) {
     "errcode": "SOCKET_CLOSED",
     "message": "Cannot close non-connected socket"
     });
-  } else if(this.clientSocket) {
-    this.clientSocket.close();
+  } else if (this.clientSocket) {
+    this.clientSocket.close({
+      "errcode": "SUCCESS",
+      "message": "Socket closed by call to close"
+    });
   } else if (this.serverSocket) {
-    this.serverSocket.disconnect();
+    this.serverSocket.disconnect({
+      "errcode": "SUCCESS",
+      "message": "Socket closed by call to close"
+    });
   } else {
     continuation(undefined, {
       'errcode': 'SOCKET_CLOSED',
@@ -48,6 +54,12 @@ Socket_firefox.prototype.close = function(continuation) {
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
   this.clientSocket.onDisconnect = function(err) {
+    if (!err) {
+      err = {
+        "errcode": "CONNECTION_CLOSED",
+        "message": "Connection closed gracefully"
+      };
+    }
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
