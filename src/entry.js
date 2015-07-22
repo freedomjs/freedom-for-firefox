@@ -23,6 +23,7 @@ if (typeof Components !== 'undefined') {
     require('freedom/providers/core/core.unprivileged'),
     require('freedom/providers/core/core.echo'),
     require('freedom/providers/core/core.console'),
+    require('freedom/providers/core/core.crypto'),
     require('freedom/providers/core/core.peerconnection'),
     require('freedom/providers/core/core.rtcpeerconnection'),
     require('freedom/providers/core/core.rtcdatachannel'),
