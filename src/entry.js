@@ -17,6 +17,7 @@ if (typeof Components !== 'undefined') {
   WebSocket = hiddenWindow.WebSocket;
   FileReader = hiddenWindow.FileReader;
 
+  Components.utils.importGlobalProperties(['crypto']);
   Components.utils.importGlobalProperties(['URL']);
 
   providers = [
