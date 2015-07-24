@@ -44,7 +44,7 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interact
     tab,
     previousTab = gBrowser.selectedTab;
 
-  if (interactive === undefined) {
+  if (typeof interactive === "undefined") {
     interactive = true;
   }
 
