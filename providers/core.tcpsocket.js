@@ -9,6 +9,15 @@ function Socket_firefox(cap, dispatchEvent, socketId) {
     this.clientSocket = incomingConnections[socketId];
     delete incomingConnections[socketId];
     this.clientSocket.setOnDataListener(this._onData.bind(this));
+    this.clientSocket.onDisconnect = function(err) {
+      if (!err) {
+        err = {
+          "errcode": "CONNECTION_CLOSED",
+          "message": "Connection closed gracefully"
+        };
+      }
+      this.dispatchEvent("onDisconnect", err);
+    }.bind(this);
   }
 }
 
