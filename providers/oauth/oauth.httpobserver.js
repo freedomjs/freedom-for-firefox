@@ -35,13 +35,18 @@ FirefoxTabsAuth.prototype.initiateOAuth = function (redirectURIs, continuation) 
   return false;
 };
 
-FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continuation) {
+FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, interactive, continuation) {
   "use strict";
   var gBrowser = wm.getMostRecentWindow("navigator:browser").gBrowser,
     listener,
     complete,
+    fail,
     tab,
     previousTab = gBrowser.selectedTab;
+
+  if (typeof interactive === "undefined") {
+    interactive = true;
+  }
 
   var httpRequestObserver = {
     observe: function(subject, topic, data) {
@@ -65,9 +70,13 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continua
     }
   };
 
+  var hasCredentials = false;
   complete = function (location) {
+    hasCredentials = true;
     httpRequestObserver.unregister();
-    gBrowser.selectedTab = previousTab;
+    if (interactive) {
+      gBrowser.selectedTab = previousTab;
+    }
     // Need to wait until the tab has switched before removing it
     setTimeout(function () {
       gBrowser.removeTab(tab);
@@ -75,12 +84,26 @@ FirefoxTabsAuth.prototype.launchAuthFlow = function (authUrl, stateObj, continua
     }, 100);
   };
 
+  fail = function () {
+    gBrowser.removeProgressListener(listener);
+    gBrowser.removeTab(tab);
+    continuation(undefined, 'Error in launchAuthFlow');
+  };
+
   httpRequestObserver.register();
 
   //Timeout before switching makes sure the http observer is installed.
   setTimeout(function () {
     tab = gBrowser.addTab(authUrl);
-    gBrowser.selectedTab = tab;
+    if (interactive) {
+      gBrowser.selectedTab = tab;
+    } else {
+      setTimeout(function () {
+        if (!hasCredentials) {
+          fail();
+        }
+      }, 5000);
+    }
   }, 100);
 };
 
