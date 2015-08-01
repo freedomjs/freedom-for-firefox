@@ -22,7 +22,7 @@
     "es5-shim": "^4.1.4",
     "es6-promise": "^2.1.1",
     "folderify": "^0.6.0",
-    "freedom": "~0.6.25",
+    "freedom": "~0.6.26",
     "fs-extra": "^0.18.4",
     "glob": "^5.0.10",
     "grunt": "~0.4.5",
