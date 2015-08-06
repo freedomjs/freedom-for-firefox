@@ -16,4 +16,4 @@ install:
   - "firefox -v"
   - "shippable_retry npm install"
 script:
-  - "grunt test"
+  - "grunt test --firefox-bin /usr/bin/firefox"

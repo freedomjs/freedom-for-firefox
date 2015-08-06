@@ -36,11 +36,15 @@ grunt.loadNpmTasks('freedom-for-firefox');
 You would then configure the `build-test-addon` task with your own jasmine tests, similarly to
 how it is run by this project.
 
-To view the browser console you will currently need to run firefox directly:
-```bash
-cd .build
-../tmp/mozilla-addon-sdk/addon-sdk-1.17-official/bin/cfx run
-```
+Some helpful flags you can add to the `grunt test` command:
+- `--firefox-debugger` - fire up a JavaScript console running in the test addon
+- `--verbose -d` - get extremely verbose (debug-level) output
+
+If you want the browser to stay open after the test run (e.g. to investigate
+more in the debugger console) you can change `stayOpen` in
+`tasks/build-test-addon.js` to `true`. You can also directly run the addon
+by installing jpm (`npm install jpm -g`) and then entering the `.build/` path
+and executing `jpm run`.
 
 # FAQ
 - Mac OS X firewalls have been known to block WebRTC when set to its strictest setting.
