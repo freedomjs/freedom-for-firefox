@@ -19,7 +19,7 @@ instance.on('start', function() {
         "scope=" + encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile") + "&" +
         "redirect_uri=" + encodeURIComponent(obj.redirect) + "&" +
         "state=" + encodeURIComponent(obj.state);
-    return oauth.launchAuthFlow(url, obj);
+    return oauth.launchAuthFlow(url, obj, true);
     //instance.emit("oAuth", url);
   }).then(function(responseUrl) {
     var query = responseUrl.substr(responseUrl.indexOf('#') + 1),
@@ -33,7 +33,7 @@ instance.on('start', function() {
       param = keys[i].substr(0, keys[i].indexOf('='));
       params[param] = keys[i].substr(keys[i].indexOf('=') + 1);
     }
-    
+
     // https://developers.google.com/api-client-library/javascript/features/cors
     // claims that googleapis.com supports CORS Headers. This is a lie.
     // However, undocumented everywere is the fact that the endpoint API does

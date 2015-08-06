@@ -38,10 +38,10 @@ ServerSocket.prototype.listen = function() {
   this.nsIServerSocket.asyncListen(new nsIServerSocketListener(this));
 };
 
-ServerSocket.prototype.disconnect = function() {
+ServerSocket.prototype.disconnect = function(err) {
   this.nsIServerSocket.close();
   if (this.onDisconnect) {
-    this.onDisconnect();
+    this.onDisconnect(err);
   }
 };
 

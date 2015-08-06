@@ -8,12 +8,24 @@ function Socket_firefox(cap, dispatchEvent, socketId) {
   if (socketId in incomingConnections) {
     this.clientSocket = incomingConnections[socketId];
     delete incomingConnections[socketId];
+    if (!Socket_firefox.activeConnections[this.clientSocket]) {
+      delete this.clientSocket.transport;
+    }
     this.clientSocket.setOnDataListener(this._onData.bind(this));
-    delete this.clientSocket.transport;  // new socket shouldn't be connected
+    this.clientSocket.onDisconnect = function(err) {
+      if (!err) {
+        err = {
+          "errcode": "CONNECTION_CLOSED",
+          "message": "Connection closed gracefully"
+        };
+      }
+      this.dispatchEvent("onDisconnect", err);
+    }.bind(this);
   }
 }
 
 Socket_firefox.incomingConnections = {};
+Socket_firefox.activeConnections = {};
 Socket_firefox.socketNumber = 1;
 
 Socket_firefox.prototype.getInfo = function(continuation) {
@@ -30,10 +42,17 @@ Socket_firefox.prototype.close = function(continuation) {
     "errcode": "SOCKET_CLOSED",
     "message": "Cannot close non-connected socket"
     });
-  } else if(this.clientSocket) {
-    this.clientSocket.close();
+  } else if (this.clientSocket) {
+    this.clientSocket.close({
+      "errcode": "SUCCESS",
+      "message": "Socket closed by call to close"
+    });
+    delete Socket_firefox.activeConnections[this.clientSocket];
   } else if (this.serverSocket) {
-    this.serverSocket.disconnect();
+    this.serverSocket.disconnect({
+      "errcode": "SUCCESS",
+      "message": "Socket closed by call to close"
+    });
   } else {
     continuation(undefined, {
       'errcode': 'SOCKET_CLOSED',
@@ -48,6 +67,12 @@ Socket_firefox.prototype.close = function(continuation) {
 Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.clientSocket = new ClientSocket();
   this.clientSocket.onDisconnect = function(err) {
+    if (!err) {
+      err = {
+        "errcode": "CONNECTION_CLOSED",
+        "message": "Connection closed gracefully"
+      };
+    }
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
@@ -157,6 +182,7 @@ Socket_firefox.prototype._onData = function(buffer) {
 Socket_firefox.prototype._onConnect = function(clientSocket) {
   var socketNumber = Socket_firefox.socketNumber++;
   Socket_firefox.incomingConnections[socketNumber] = clientSocket;
+  Socket_firefox.activeConnections[clientSocket] = true;
   this.dispatchEvent("onConnection", {
     socket: socketNumber,
     host: this.host,
