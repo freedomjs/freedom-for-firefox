@@ -25,7 +25,18 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
     return;
   }
   try {
-    this._nsIUDPSocket.init(port, isLocal);
+    var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+      .getService(Components.interfaces.nsIXULAppInfo);
+    var vc = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
+      .getService(Components.interfaces.nsIVersionComparator);
+    if(vc.compare(appInfo.version, "40") >= 0) {
+      // running under Firefox 40 or later
+      var systemPrincipal = Components.classes["@mozilla.org/systemprincipal;1"]
+        .createInstance(Components.interfaces.nsIPrincipal);
+      this._nsIUDPSocket.init(port, isLocal, systemPrincipal);
+    } else {
+      this._nsIUDPSocket.init(port, isLocal);
+    }
     this._nsIUDPSocket.asyncListen(new nsIUDPSocketListener(this));
     continuation(0);
   } catch (e) {
