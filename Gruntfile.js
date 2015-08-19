@@ -84,8 +84,7 @@ module.exports = function (grunt) {
         pushTo: 'origin'
       }
     },
-    clean: ['freedom-for-firefox.jsm', 'freedom.map', 'node_modules/',
-            'spec.jsm', '.build/'],
+    clean: ['freedom-for-firefox.jsm', 'freedom.map', 'spec.jsm', '.build/'],
     'npm-publish': {
       options: {
         // list of tasks that are required before publishing
