@@ -22,7 +22,6 @@ function nsIInputStreamCallback(clientSocket) {
 }
 
 nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
-  console.log("ONINPUTSTREAM");
   if (this.socket.paused) {
     return;
   }
@@ -30,16 +29,8 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
   var bytesAvailable;
   var binaryReader = this.socket.binaryReader;
   try {
-    console.log("TRYING BYTES");
-    console.log(binaryReader);
-    console.log(this.socket);
-    console.dir(this.socket);
     bytesAvailable = binaryReader.available();
   } catch (e) {
-    console.log("ERROR!");
-    console.log(e);
-    console.log(this.socket.onConnect);
-    console.log(this.onConnect);
     if (this.socket.onConnect) {
       this.socket.onConnect(undefined, {
         errcode: 'CONNECTION_FAILED',
@@ -55,11 +46,7 @@ nsIInputStreamCallback.prototype.onInputStreamReady = function(stream) {
     this.socket.close();
     return;
   }
-  console.log("GET TO END");
-  console.log(this.socket.onConnect);
-  console.log(this.onConnect);
   if (this.socket.onConnect) {
-    console.log("SHOULD CALL CONT INPUT");
     this.socket.onConnect();
     delete this.socket.onConnect;
   }
@@ -130,12 +117,8 @@ ClientSocket.prototype.connect =
 
 // Called due to the setEventSync call.
 ClientSocket.prototype.onTransportStatus = function (transport, status) {
-  console.log("ON TRANSPORT STATUS");
-  console.log(status);
-  console.log(this.onConnect);
   if (status == Components.interfaces.nsISocketTransport.STATUS_CONNECTED_TO &&
       this.onConnect) {
-    console.log("SHOULD CALL CONTINUATION");
     this.onConnect();
     delete this.onConnect;
   }
