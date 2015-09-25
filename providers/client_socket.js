@@ -94,7 +94,7 @@ ClientSocket.prototype._setupTransport = function(transport) {
 };
 
 ClientSocket.prototype.connect =
-  function(hostname, port, startTls, continuation) {
+  function (hostname, port, startTls, continuation) {
     if (typeof this.transport !== 'undefined') {
       return continuation(undefined, {
         errcode: 'ALREADY_CONNECTED ',
@@ -118,7 +118,7 @@ ClientSocket.prototype.connect =
 // Called due to the setEventSync call.
 ClientSocket.prototype.onTransportStatus = function (transport, status) {
   if (status == Components.interfaces.nsISocketTransport.STATUS_CONNECTED_TO &&
-     this.onConnect) {
+      this.onConnect) {
     this.onConnect();
     delete this.onConnect;
   }

@@ -29,10 +29,14 @@ Socket_firefox.activeConnections = {};
 Socket_firefox.socketNumber = 1;
 
 Socket_firefox.prototype.getInfo = function(continuation) {
-  if(this.clientSocket) {
+  if (this.clientSocket) {
     continuation(this.clientSocket.getInfo());
   } else if (this.serverSocket) {
     continuation(this.serverSocket.getInfo());
+  } else {
+    continuation({
+      connected: false
+    });
   }
 };
 
@@ -75,10 +79,10 @@ Socket_firefox.prototype.connect = function(hostname, port, continuation) {
     }
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
-  this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(hostname, port, false, continuation);
   this.hostname = hostname;
   this.port = port;
+  this.clientSocket.setOnDataListener(this._onData.bind(this));
+  this.clientSocket.connect(hostname, port, false, continuation);
 };
 
 Socket_firefox.prototype.prepareSecure = function(continuation) {
