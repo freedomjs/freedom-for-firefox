@@ -2,8 +2,8 @@ var provider = require('../providers/core.udpsocket');
 
 describe("unit: core.udpsocket", function() {
   var socket, serverDispatchEvent;
-  const listenPort = 8082,
-        sendPort = 8083;
+  var listenPort = 8082,
+      sendPort = 8083;
   beforeEach(function() {
     serverDispatchEvent = jasmine.createSpy("dispatchEvent");
     socket = new provider.provider(undefined, serverDispatchEvent);
@@ -21,12 +21,12 @@ describe("unit: core.udpsocket", function() {
   });
 
   it("receives data", function(done) {
-    const sendString = "Hello World",
-          sendBuffer = str2ab(sendString),
-          clientDispatchEvent = jasmine.createSpy("dispatchEvent"),
-          sendingSocket = new provider.provider(undefined, clientDispatchEvent),
-          sendContinuation = jasmine.createSpy("sendContinuation"),
-          bindContinuation = jasmine.createSpy("bindContinuation");
+    var sendString = "Hello World",
+        sendBuffer = str2ab(sendString),
+        clientDispatchEvent = jasmine.createSpy("dispatchEvent"),
+        sendingSocket = new provider.provider(undefined, clientDispatchEvent),
+        sendContinuation = jasmine.createSpy("sendContinuation"),
+        bindContinuation = jasmine.createSpy("bindContinuation");
 
     socket.bind("localhost", listenPort, bindContinuation);
     expect(bindContinuation).toHaveBeenCalledWith(0);

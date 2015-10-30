@@ -37,7 +37,7 @@ describe("unit: core.tcpsocket", function() {
     var stringMessage = "Hello World";
     serverSocket.onConnect = function(sock) {
       sock.setOnDataListener(function (data) {
-        const message = clientSocket.arrayBufferToString(data);
+        var message = clientSocket.arrayBufferToString(data);
         expect(message).toEqual(stringMessage);
         serverSocket.disconnect();
         done();
