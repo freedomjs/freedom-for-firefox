@@ -32,7 +32,7 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
     if(vc.compare(appInfo.version, "40") >= 0) {
       // running under Firefox 40 or later
       var systemPrincipal = Components.classes["@mozilla.org/systemprincipal;1"]
-        .createInstance(Components.interfaces.nsIPrincipal);
+          .createInstance(Components.interfaces.nsIPrincipal);
       this._nsIUDPSocket.init(port, isLocal, systemPrincipal);
     } else {
       this._nsIUDPSocket.init(port, isLocal);
@@ -41,7 +41,7 @@ UDP_Firefox.prototype.bind = function(address, port, continuation) {
     continuation(0);
   } catch (e) {
     continuation(undefined, {
-      errcode: "BIND_FAILED",
+      errcode: "UNKNOWN",
       message: "Failed to Bind: " + e.message
     });
   }
