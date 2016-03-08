@@ -2,7 +2,7 @@
 
 var testUtil = require('freedom/spec/util');
 var self = Components.stack.filename;
-var base = self.substr(0, self.lastIndexOf('/'));
+var base = self.substr(0, self.lastIndexOf('/')) + '/node_modules/freedom';
 var setup = function () {
   testUtil.setSpecBase(base);
   testUtil.setCoreProviders([
@@ -35,36 +35,43 @@ describe("integration: storage.shared.json", require("freedom/spec/providers/sto
 
 // Transport
 describe("integration: transport.webrtc.json",
-         require('freedom/spec/providers/transport/transport.integration.src').bind(this,
-                                                                                    "providers/transport/webrtc/transport.webrtc.json", setup));
+         require('freedom/spec/providers/transport/transport.integration.src')
+         .bind(this,
+               "providers/transport/webrtc/transport.webrtc.json", setup));
 
 describe("integration: core.rtcpeerconnection",
-         require('freedom/spec/providers/coreIntegration/rtcpeerconnection.integration.src').bind(this,
-                                                                                                  require("freedom/providers/core/core.rtcpeerconnection"),
-                                                                                                  require("freedom/providers/core/core.rtcdatachannel"),
-                                                                                                  setup));
+         require('freedom/spec/providers/coreIntegration/rtcpeerconnection.integration.src')
+         .bind(this,
+               require("freedom/providers/core/core.rtcpeerconnection"),
+               require("freedom/providers/core/core.rtcdatachannel"),
+               setup));
 
 describe("integration: core.xhr",
-         require("freedom/spec/providers/coreIntegration/xhr.integration.src").bind(this,
-                                                                                    require("freedom/providers/core/core.xhr"), setup));
+         require("freedom/spec/providers/coreIntegration/xhr.integration.src")
+         .bind(this,
+               require("freedom/providers/core/core.xhr"), setup));
 
 describe("integration: core.tcpsocket",
-         require('freedom/spec/providers/coreIntegration/tcpsocket.integration.src').bind(this,
-                                                                                          require('../providers/core.tcpsocket'), setup));
+         require('freedom/spec/providers/coreIntegration/tcpsocket.integration.src')
+         .bind(this,
+               require('../providers/core.tcpsocket'), setup));
 
 describe("integration: core.udpsocket",
-         require('freedom/spec/providers/coreIntegration/udpsocket.integration.src').bind(this,
-                                                                                          require('../providers/core.udpsocket'), setup));
+         require('freedom/spec/providers/coreIntegration/udpsocket.integration.src')
+         .bind(this,
+               require('../providers/core.udpsocket'), setup));
 
 describe("integration: core.oauth - progresslistener",
-         require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,
-                                                                                      require("freedom/providers/core/core.oauth"),
-                                                                                      [ require("../providers/oauth/oauth.progresslistener") ],
-                                                                                      [ "https://localhost:9876/" ],
-                                                                                      setup));
+         require("freedom/spec/providers/coreIntegration/oauth.integration.src")
+         .bind(this,
+               require("freedom/providers/core/core.oauth"),
+               [ require("../providers/oauth/oauth.progresslistener") ],
+               [ "https://localhost:9876/" ],
+               setup));
 describe("integration: core.oauth - httpobserver",
-         require("freedom/spec/providers/coreIntegration/oauth.integration.src").bind(this,
-                                                                                      require("freedom/providers/core/core.oauth"),
-                                                                                      [ require("../providers/oauth/oauth.httpobserver") ],
-                                                                                      [ "https://localhost:9876/" ],
-                                                                                      setup));
+         require("freedom/spec/providers/coreIntegration/oauth.integration.src")
+         .bind(this,
+               require("freedom/providers/core/core.oauth"),
+               [ require("../providers/oauth/oauth.httpobserver") ],
+               [ "https://localhost:9876/" ],
+               setup));
