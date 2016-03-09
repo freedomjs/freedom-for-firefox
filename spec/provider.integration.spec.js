@@ -21,7 +21,7 @@ XPCOMUtils.importRelative(jsmContext, "freedom-for-firefox.jsm");
 
 // Social
 describe("integration-single: social.loopback.json", require("freedom/spec/providers/social/social.single.integration.src")
-  .bind(this, freedom, base+"/providers/social/loopback/social.loopback.json"), {});
+  .bind(this, freedom, base+"/providers/social/loopback/social.loopback.json", {}));
 describe("integration-single: social.ws.json", require("freedom/spec/providers/social/social.single.integration.src")
   .bind(this, freedom, base+"/providers/social/websocket-server/social.ws.json", {}));
 describe("integration-double: social.ws.json", require("freedom/spec/providers/social/social.double.integration.src")

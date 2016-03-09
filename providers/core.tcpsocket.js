@@ -3,6 +3,11 @@ var ServerSocket = require('./server_socket');
 
 function Socket_firefox(cap, dispatchEvent, socketId) {
   var incomingConnections = Socket_firefox.incomingConnections;
+
+  // Whether prepareSecure() was called before connect.  If so, this will be a
+  // TLS socket from the start.  Otherwise, secure() will convert from insecure
+  // to secure (STARTTLS) if it is called.
+  this.secureOnStart = false;
   this.dispatchEvent = dispatchEvent;
   this.socketId = socketId;
   if (socketId in incomingConnections) {
@@ -82,15 +87,23 @@ Socket_firefox.prototype.connect = function(hostname, port, continuation) {
   this.hostname = hostname;
   this.port = port;
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(hostname, port, false, continuation);
+  var secureType = this.secureOnStart ? 'ssl' : null;
+  this.clientSocket.connect(hostname, port, secureType, continuation);
 };
 
 Socket_firefox.prototype.prepareSecure = function(continuation) {
+  if (!this.clientSocket) {
+    this.secureOnStart = true;
+  }
   continuation();
 };
 
 // TODO: handle failures.
 Socket_firefox.prototype.secure = function(continuation) {
+  if (this.secureOnStart) {
+    continuation();
+    return;
+  }
   if (!this.hostname || !this.port || !this.clientSocket) {
     continuation(undefined, {
       "errcode": "NOT_CONNECTED",
@@ -113,7 +126,7 @@ Socket_firefox.prototype.secure = function(continuation) {
     this.dispatchEvent("onDisconnect", err);
   }.bind(this);
   this.clientSocket.setOnDataListener(this._onData.bind(this));
-  this.clientSocket.connect(this.hostname, this.port, true, continuation);
+  this.clientSocket.connect(this.hostname, this.port, 'starttls', continuation);
 };
 
 Socket_firefox.prototype.write = function(buffer, continuation) {

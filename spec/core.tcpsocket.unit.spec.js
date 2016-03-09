@@ -95,5 +95,30 @@ describe("unit: core.tcpsocket", function() {
     socket.connect('chat.facebook.com', 5222, continuation);
     socket.write(str2ab(INIT_XMPP), continuation);
   });
+
+  it("secures socket with tls", function(done) {
+    var HTTP_GET = [
+        'GET / HTTP/1.1',
+        'Host: en.wikipedia.org',
+        'Connection: close',
+        '\r\n'].join('\r\n');
+    // Test that we can connect to en.wikipedia.org:443 with TLS.
+    var onDataCount = 0;
+    var dispatchEvent = function (eventType, data) {
+      if (eventType == 'onData') {
+        var response = ab2str(data.data);
+        if (response.indexOf('HTTP') >= 0) {
+          done();
+        }
+      }
+    };
+    var continuation = function() {};
+    var socket = new provider.provider(undefined, dispatchEvent, undefined);
+    socket.prepareSecure(continuation);
+    socket.connect('en.wikipedia.org', 443, function() {
+      socket.secure(continuation);
+      socket.write(str2ab(HTTP_GET), continuation);
+    });
+  });
 });
 
