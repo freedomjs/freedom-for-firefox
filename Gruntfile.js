@@ -18,6 +18,11 @@ var freedomPrefix = require('path').dirname(require.resolve('freedom'));
 
 module.exports = function (grunt) {
   'use strict';
+  require('time-grunt')(grunt);
+  require('jit-grunt')(grunt, {
+    'npm-publish': 'grunt-npm'
+  });
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
@@ -40,11 +45,6 @@ module.exports = function (grunt) {
           }
         }
       },
-      jasmine: {
-        files: {
-          'spec.jsm': ['src/spec.js']
-        }
-      },
       frame: {
         files: {
           'build/frame.js': require.resolve('freedom/src/util/frameEntry.js')
@@ -57,19 +57,11 @@ module.exports = function (grunt) {
         ]
       }
     },
-    "build-test-addon": {
-      freedom: {
-        files: {
-          '.build': [ 'spec.jsm' ]
-        },
-        options: {
-          helper: [
-            {path: 'freedom-for-firefox.jsm', include: false},
-            {path: freedomPrefix + '/providers', name: 'providers', include: false},
-            {path: freedomPrefix + '/spec', name: 'spec', include: false}
-          ]
-        }
-      }
+    jasmine_firefoxaddon: {
+      tests: ['spec/*.spec.js'],
+      resources: ['node_modules/freedom/providers/**/*.js*',
+                  'node_modules/freedom/spec/**/*.js'],
+      helpers: ['freedom-for-firefox.jsm']
     },
     bump: {
       options: {
@@ -122,25 +114,13 @@ module.exports = function (grunt) {
 
   });
 
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-prompt');
-  grunt.loadNpmTasks('grunt-bump');
-  grunt.loadNpmTasks('grunt-npm');
-  grunt.loadNpmTasks('grunt-shell');
-
-  grunt.loadTasks('tasks');
-
   grunt.registerTask('build', [
     'jshint:providers',
     'browserify:freedom'
   ]);
   grunt.registerTask('test', [
     'build',
-    'browserify:jasmine',
-    'integration'
+    'jasmine_firefoxaddon'
   ]);
 
   grunt.registerTask('release', function (arg) {
