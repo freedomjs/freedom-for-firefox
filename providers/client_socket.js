@@ -94,7 +94,7 @@ ClientSocket.prototype._setupTransport = function(transport) {
 };
 
 ClientSocket.prototype.connect =
-  function (hostname, port, startTls, continuation) {
+  function (hostname, port, secureType, continuation) {
     if (typeof this.transport !== 'undefined') {
       return continuation(undefined, {
         errcode: 'ALREADY_CONNECTED ',
@@ -103,8 +103,9 @@ ClientSocket.prototype.connect =
     }
     this.onConnect = continuation;
 
-    var socketTypes = startTls ? ['starttls'] : [null];
-    var numSocketTypes = startTls ? 1 : 0;
+    // secureType is 'starttls', 'ssl', or null.
+    var socketTypes = [secureType];
+    var numSocketTypes = secureType ? 1 : 0;
     var transport = socketTransportService.createTransport(
       socketTypes,
       numSocketTypes,
