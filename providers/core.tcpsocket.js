@@ -183,10 +183,21 @@ Socket_firefox.prototype.listen = function(host, port, continuation) {
       this.serverSocket.listen();
       continuation();
     } catch (e) {
-      continuation(undefined, {
-        "errcode": "UNKNOWN",
-        "message": e.message
-      });
+      // Firefox sometimes gets colliding server sockets w/out triggering
+      // this.serverSocket !== undefined above
+      if (e.message ===
+          "Component returned failure code: 0x804b0036 " +
+          "(NS_ERROR_SOCKET_ADDRESS_IN_USE) [nsIServerSocket.init]") {
+        continuation(undefined, {
+          "errcode": "ALREADY_CONNECTED",
+          "message": "Cannot listen on existing socket."
+        });
+      } else {
+        continuation(undefined, {
+          "errcode": "UNKNOWN",
+          "message": e.message
+        });
+      }
     }
   }
 };
