@@ -2,7 +2,7 @@ var providers;
 
 // When included as a jsm file.
 if (typeof Components !== 'undefined') {
-  Components.utils.import("resource://gre/modules/devtools/Console.jsm");
+  Components.utils.import("resource://gre/modules/Console.jsm");
   Components.utils.import("resource://gre/modules/Timer.jsm");
   Components.utils.import('resource://gre/modules/Services.jsm');
   XMLHttpRequest = Components.Constructor("@mozilla.org/xmlextras/xmlhttprequest;1", "nsIXMLHttpRequest");
