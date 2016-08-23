@@ -16,6 +16,7 @@ if (typeof Components !== 'undefined') {
   Blob = hiddenWindow.Blob;
   WebSocket = hiddenWindow.WebSocket;
   FileReader = hiddenWindow.FileReader;
+  navigator = hiddenWindow.navigator;
 
   Components.utils.importGlobalProperties(['crypto']);
   Components.utils.importGlobalProperties(['URL']);
@@ -23,6 +24,7 @@ if (typeof Components !== 'undefined') {
   providers = [
     require('freedom/providers/core/core.unprivileged'),
     require('freedom/providers/core/core.echo'),
+    require('freedom/providers/core/core.battery'),
     require('freedom/providers/core/core.console'),
     require('freedom/providers/core/core.crypto'),
     require('freedom/providers/core/core.peerconnection'),
