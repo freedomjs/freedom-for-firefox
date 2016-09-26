@@ -35,6 +35,7 @@ if (typeof Components !== 'undefined') {
     require('../providers/core.storage'),
     require('freedom/providers/core/core.view'),
     require('freedom/providers/core/core.oauth'),
+    require('freedom/providers/core/core.online'),
     require('freedom/providers/core/core.websocket'),
     require('freedom/providers/core/core.xhr')
   ];
