@@ -23,7 +23,7 @@
     "es5-shim": "^4.5.9",
     "es6-promise": "^3.2.1",
     "folderify": "^0.6.0",
-    "freedom": "~0.6.32",
+    "freedom": "~0.6.36",
     "fs-extra": "^0.30.0",
     "glob": "^7.0.5",
     "grunt": "^0.4.5",
@@ -43,7 +43,7 @@
     "webrtc-adapter": "0.0.7"
   },
   "peerDependencies": {
-    "freedom": "~0.6.32"
+    "freedom": "~0.6.36"
   },
   "scripts": {}
 }
